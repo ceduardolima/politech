@@ -1,0 +1,4 @@
+enum PresencaEnum {
+  PRESENTE,
+  AUSENTE;
+}

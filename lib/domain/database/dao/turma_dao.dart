@@ -7,8 +7,11 @@ abstract class TurmaDao {
   @Insert(onConflict: OnConflictStrategy.fail)
   Future<void> inserir(Turma turma);
 
-  @Query("SELECT alunos.* FROM turmas LEFT JOIN alunos ON alunos.id = turmas.aluno_id WHERE turmas.nome = :nomeDaTurma")
-  Future<List<Aluno>> listarAlunos(String nomeDaTurma);
+  @Query("SELECT * FROM turmas")
+  Stream<List<Turma>> assistirListaDeTurmas();
+
+  @Query("SELECT alunos.* FROM turmas LEFT JOIN alunos ON alunos.turma_id = turmas.id WHERE turmas.id = :turmaId")
+  Future<List<Aluno>> listarAlunos(String turmaId);
 
   @delete
   Future<void> excluir(Turma turma);

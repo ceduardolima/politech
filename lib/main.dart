@@ -7,6 +7,26 @@ import 'package:politech/domain/database/dao/usuario_dao.dart';
 import 'package:politech/domain/database/politech_db.dart';
 
 void main() {
+  criarSingletons();
+  runApp(
+    MaterialApp(
+      home: FutureBuilder(
+        future: GetIt.instance.allReady(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            return MyHomePage(title: "Politech");
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
+    ),
+  );
+}
+
+void criarSingletons() {
   GetIt getIt = GetIt.instance;
   getIt.registerSingletonAsync<PolitechDb>(
       () async => $FloorPolitechDb.databaseBuilder('politech_db.db').build());
@@ -22,19 +42,6 @@ void main() {
   getIt.registerSingletonWithDependencies<PresencaDao>(
       () => GetIt.instance.get<PolitechDb>().presencaDao,
       dependsOn: [PolitechDb]);
-  runApp(MaterialApp(
-    home: FutureBuilder(
-      future: GetIt.instance.allReady(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData) {
-          return MyHomePage(title: "Politech");
-        } else {
-          return const Center(child: CircularProgressIndicator(),);
-        }
-      }
-      ,
-    ),
-  ));
 }
 
 class MyApp extends StatelessWidget {

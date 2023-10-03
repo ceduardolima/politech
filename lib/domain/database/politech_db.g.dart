@@ -65,6 +65,8 @@ class _$PolitechDb extends PolitechDb {
 
   AlunoDao? _alunoDaoInstance;
 
+  PresencaDao? _presencaDaoInstance;
+
   Future<sqflite.Database> open(
     String path,
     List<Migration> migrations, [
@@ -91,9 +93,13 @@ class _$PolitechDb extends PolitechDb {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `alunos` (`id` TEXT NOT NULL, `num_inscricao` TEXT NOT NULL, `nome` TEXT NOT NULL, `cpf` TEXT NOT NULL, PRIMARY KEY (`id`))');
         await database.execute(
+            'CREATE TABLE IF NOT EXISTS `presencas` (`id` TEXT NOT NULL, `aluno_id` TEXT NOT NULL, `presente` INTEGER NOT NULL, `data` INTEGER NOT NULL, FOREIGN KEY (`aluno_id`) REFERENCES `alunos` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
+        await database.execute(
             'CREATE UNIQUE INDEX `index_alunos_num_inscricao` ON `alunos` (`num_inscricao`)');
         await database.execute(
             'CREATE UNIQUE INDEX `index_alunos_cpf` ON `alunos` (`cpf`)');
+        await database.execute(
+            'CREATE INDEX `index_presencas_aluno_id` ON `presencas` (`aluno_id`)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -109,6 +115,11 @@ class _$PolitechDb extends PolitechDb {
   @override
   AlunoDao get alunoDao {
     return _alunoDaoInstance ??= _$AlunoDao(database, changeListener);
+  }
+
+  @override
+  PresencaDao get presencaDao {
+    return _presencaDaoInstance ??= _$PresencaDao(database, changeListener);
   }
 }
 
@@ -306,5 +317,69 @@ class _$AlunoDao extends AlunoDao {
   @override
   Future<void> atualizar(Aluno usuario) async {
     await _alunoUpdateAdapter.update(usuario, OnConflictStrategy.abort);
+  }
+}
+
+class _$PresencaDao extends PresencaDao {
+  _$PresencaDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
+        _presencaInsertionAdapter = InsertionAdapter(
+            database,
+            'presencas',
+            (Presenca item) => <String, Object?>{
+                  'id': item.id,
+                  'aluno_id': item.alunoId,
+                  'presente': item.presente ? 1 : 0,
+                  'data': item.data
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Presenca> _presencaInsertionAdapter;
+
+  @override
+  Future<List<Aluno>> listarAlunosPresentes() async {
+    return _queryAdapter.queryList(
+        'SELECT alunos.* FROM alunos LEFT JOIN presencas ON alunos.id = presencas.aluno_id WHERE presente = 1',
+        mapper: (Map<String, Object?> row) => Aluno(
+            row['id'] as String,
+            row['num_inscricao'] as String,
+            row['nome'] as String,
+            row['cpf'] as String));
+  }
+
+  @override
+  Future<List<Aluno>> listarAlunosFaltates() async {
+    return _queryAdapter.queryList(
+        'SELECT alunos.* FROM alunos LEFT JOIN presencas ON alunos.id = presencas.aluno_id WHERE presente = 0',
+        mapper: (Map<String, Object?> row) => Aluno(
+            row['id'] as String,
+            row['num_inscricao'] as String,
+            row['nome'] as String,
+            row['cpf'] as String));
+  }
+
+  @override
+  Future<List<Presenca>> listarPresencasDoAluno(
+    String alunoId,
+    int inicio,
+    int fim,
+    bool presente,
+  ) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM presencas WHERE presente = ?4 AND data >= ?2 AND data <= ?3 AND aluno_id = ?1',
+        mapper: (Map<String, Object?> row) => Presenca(row['id'] as String, row['aluno_id'] as String, (row['presente'] as int) != 0, row['data'] as int),
+        arguments: [alunoId, inicio, fim, presente ? 1 : 0]);
+  }
+
+  @override
+  Future<void> inserir(Presenca presenca) async {
+    await _presencaInsertionAdapter.insert(presenca, OnConflictStrategy.fail);
   }
 }

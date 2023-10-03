@@ -15,6 +15,9 @@ class PresencaRepositorio {
     await _presencaDao.inserir(presenca);
   }
 
+  Future<void> inserirLista(List<Presenca> presencas) async {
+    await _presencaDao.inserirLista(presencas);
+  }
   Stream<List<Presenca>> assistirListaDePresencaDaTurma(String turmaId) async* {
     yield* _presencaDao.assistirListaDePresencaDaTurma(turmaId);
   }
@@ -29,5 +32,9 @@ class PresencaRepositorio {
 
   Future<List<Presenca>> listarPresencasDoAluno(String alunoId, DateTime inicio, DateTime fim, bool presente) async {
     return await _presencaDao.listarPresencasDoAluno(alunoId, inicio, fim, presente);
+  }
+
+  Future<void> excluir(Presenca presenca) async {
+    await _presencaDao.excluir(presenca);
   }
 }

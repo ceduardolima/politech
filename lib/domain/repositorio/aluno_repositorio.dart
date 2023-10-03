@@ -13,6 +13,10 @@ class AlunoRepositorio {
   Future<void> inserir(Aluno aluno) async {
     await _alunoDao.inserir(aluno);
   }
+
+  Future<void> inserirLista(List<Aluno> alunos) async {
+    await _alunoDao.inserirLista(alunos);
+  }
   
   Future<List<Aluno>> listar() async {
     return await _alunoDao.listar();
@@ -40,5 +44,9 @@ class AlunoRepositorio {
 
   Future<Aluno?> procurarPorInscricao(String inscricao) async {
     return await _alunoDao.procurarPorInscricao(inscricao);
+  }
+
+  Future<void> excluir(Aluno aluno) async {
+    await _alunoDao.excluir(aluno);
   }
 }

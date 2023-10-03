@@ -36,4 +36,8 @@ class UsuarioRepositorio {
   Future<List<Usuario>> procurarPorNome(String nome) async {
     return await _usuarioDao.procurarPorNome(nome);
   }
+
+  Future<void> excluir(Usuario usuario) async {
+    await _usuarioDao.excluir(usuario);
+  }
 }

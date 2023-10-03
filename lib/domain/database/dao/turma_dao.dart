@@ -7,6 +7,8 @@ abstract class TurmaDao {
   @Insert(onConflict: OnConflictStrategy.fail)
   Future<void> inserir(Turma turma);
 
+  @Insert(onConflict: OnConflictStrategy.fail)
+  Future<void> inserirLista(List<Turma> turma);
   @Query("SELECT * FROM turmas")
   Stream<List<Turma>> assistirListaDeTurmas();
 

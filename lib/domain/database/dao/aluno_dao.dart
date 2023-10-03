@@ -6,6 +6,9 @@ abstract class AlunoDao {
   @Insert(onConflict: OnConflictStrategy.abort)
   Future<void> inserir(Aluno aluno);
 
+  @Insert(onConflict: OnConflictStrategy.abort)
+  Future<void> inserirLista(List<Aluno> aluno);
+
   @Query("SELECT * From alunos LIMIT 20")
   Future<List<Aluno>> listar();
 
@@ -26,5 +29,8 @@ abstract class AlunoDao {
 
   @Query("SELECT * From alunos WHERE num_inscricao=:inscricao")
   Future<Aluno?> procurarPorInscricao(String inscricao);
+
+  @delete
+  Future<void> excluir(Aluno aluno);
 
 }

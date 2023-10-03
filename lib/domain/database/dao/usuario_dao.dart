@@ -26,4 +26,7 @@ abstract class UsuarioDao {
 
   @Query("SELECT * FROM usuario WHERE nome LIKE :nome LIMIT 20")
   Future<List<Usuario>> procurarPorNome(String nome);
+
+  @delete
+  Future<void> excluir(Usuario usuario);
 }

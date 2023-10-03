@@ -157,6 +157,17 @@ class _$UsuarioDao extends UsuarioDao {
                   'nome': item.nome,
                   'email': item.email
                 },
+            changeListener),
+        _usuarioDeletionAdapter = DeletionAdapter(
+            database,
+            'usuario',
+            ['id'],
+            (Usuario item) => <String, Object?>{
+                  'id': item.id,
+                  'cpf': item.cpf,
+                  'nome': item.nome,
+                  'email': item.email
+                },
             changeListener);
 
   final sqflite.DatabaseExecutor database;
@@ -168,6 +179,8 @@ class _$UsuarioDao extends UsuarioDao {
   final InsertionAdapter<Usuario> _usuarioInsertionAdapter;
 
   final UpdateAdapter<Usuario> _usuarioUpdateAdapter;
+
+  final DeletionAdapter<Usuario> _usuarioDeletionAdapter;
 
   @override
   Future<List<Usuario>> listar() async {
@@ -234,6 +247,11 @@ class _$UsuarioDao extends UsuarioDao {
   Future<void> atualizar(Usuario usuario) async {
     await _usuarioUpdateAdapter.update(usuario, OnConflictStrategy.abort);
   }
+
+  @override
+  Future<void> excluir(Usuario usuario) async {
+    await _usuarioDeletionAdapter.delete(usuario);
+  }
 }
 
 class _$AlunoDao extends AlunoDao {
@@ -263,6 +281,18 @@ class _$AlunoDao extends AlunoDao {
                   'nome': item.nome,
                   'cpf': item.cpf
                 },
+            changeListener),
+        _alunoDeletionAdapter = DeletionAdapter(
+            database,
+            'alunos',
+            ['id'],
+            (Aluno item) => <String, Object?>{
+                  'id': item.id,
+                  'num_inscricao': item.numInscricao,
+                  'turma_id': item.turmaId,
+                  'nome': item.nome,
+                  'cpf': item.cpf
+                },
             changeListener);
 
   final sqflite.DatabaseExecutor database;
@@ -274,6 +304,8 @@ class _$AlunoDao extends AlunoDao {
   final InsertionAdapter<Aluno> _alunoInsertionAdapter;
 
   final UpdateAdapter<Aluno> _alunoUpdateAdapter;
+
+  final DeletionAdapter<Aluno> _alunoDeletionAdapter;
 
   @override
   Future<List<Aluno>> listar() async {
@@ -354,8 +386,18 @@ class _$AlunoDao extends AlunoDao {
   }
 
   @override
+  Future<void> inserirLista(List<Aluno> aluno) async {
+    await _alunoInsertionAdapter.insertList(aluno, OnConflictStrategy.abort);
+  }
+
+  @override
   Future<void> atualizar(Aluno aluno) async {
     await _alunoUpdateAdapter.update(aluno, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> excluir(Aluno aluno) async {
+    await _alunoDeletionAdapter.delete(aluno);
   }
 }
 
@@ -374,6 +416,18 @@ class _$PresencaDao extends PresencaDao {
                   'presente': item.presente ? 1 : 0,
                   'data': _dateTimeConversor.encode(item.data)
                 },
+            changeListener),
+        _presencaDeletionAdapter = DeletionAdapter(
+            database,
+            'presencas',
+            ['id'],
+            (Presenca item) => <String, Object?>{
+                  'id': item.id,
+                  'aluno_id': item.alunoId,
+                  'turma_id': item.turmaId,
+                  'presente': item.presente ? 1 : 0,
+                  'data': _dateTimeConversor.encode(item.data)
+                },
             changeListener);
 
   final sqflite.DatabaseExecutor database;
@@ -383,6 +437,8 @@ class _$PresencaDao extends PresencaDao {
   final QueryAdapter _queryAdapter;
 
   final InsertionAdapter<Presenca> _presencaInsertionAdapter;
+
+  final DeletionAdapter<Presenca> _presencaDeletionAdapter;
 
   @override
   Stream<List<Presenca>> assistirListaDePresencaDaTurma(String turmaId) {
@@ -450,6 +506,17 @@ class _$PresencaDao extends PresencaDao {
   Future<void> inserir(Presenca presenca) async {
     await _presencaInsertionAdapter.insert(presenca, OnConflictStrategy.fail);
   }
+
+  @override
+  Future<void> inserirLista(List<Presenca> presenca) async {
+    await _presencaInsertionAdapter.insertList(
+        presenca, OnConflictStrategy.fail);
+  }
+
+  @override
+  Future<void> excluir(Presenca presenca) async {
+    await _presencaDeletionAdapter.delete(presenca);
+  }
 }
 
 class _$TurmaDao extends TurmaDao {
@@ -499,6 +566,11 @@ class _$TurmaDao extends TurmaDao {
   @override
   Future<void> inserir(Turma turma) async {
     await _turmaInsertionAdapter.insert(turma, OnConflictStrategy.fail);
+  }
+
+  @override
+  Future<void> inserirLista(List<Turma> turma) async {
+    await _turmaInsertionAdapter.insertList(turma, OnConflictStrategy.fail);
   }
 
   @override

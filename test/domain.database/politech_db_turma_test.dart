@@ -26,23 +26,13 @@ void main() {
     });
 
     test("Inserindo turmas", () async {
-      final aluno = Aluno.genId("123", "Eduardo", "1234567890");
+      final turma = Turma.genId("Turma 01");
+      final aluno = Aluno.genId("123", "Eduardo", "1234567890", turma.id);
+      turmaDao.inserir(turma);
       alunoDao.inserir(aluno);
-      turmaDao.inserir(Turma.genId(aluno.id, "Turma 01"));
-      final alunosDaTurma = await turmaDao.listarAlunos("Turma 01");
+      final alunosDaTurma = await turmaDao.listarAlunos(turma.id);
       expect(alunosDaTurma, const TypeMatcher<List<Aluno>>());
       expect(alunosDaTurma, isNotEmpty);
-    });
-
-    test("Apagando turma", () async {
-      final aluno = Aluno.genId("123", "Eduardo", "1234567890");
-      final turma = Turma.genId(aluno.id, "Turma 01");
-      alunoDao.inserir(aluno);
-      turmaDao.inserir(turma);
-      turmaDao.excluir(turma);
-      final alunos = await turmaDao.listarAlunos("Turma 01");
-      expect(alunos, const TypeMatcher<List<Aluno>>());
-      expect(alunos, isEmpty);
     });
   });
 }

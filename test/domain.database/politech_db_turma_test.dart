@@ -43,4 +43,20 @@ void main() {
       expect(alunosDaTurma, isEmpty);
     });
   });
+
+  group("Teste de serialização", () {
+    test("Aluno para json", () {
+      final turma = Turma.genId("123");
+      final turmaJson = turma.toJson();
+      expect(turmaJson, TypeMatcher<Map>());
+      expect(turmaJson["id"], equals(turma.id));
+    });
+
+    test("Json to entity", () {
+      final turmaJson = {"id":"12345", "nome":"Turma 01"};
+      final presenca = Turma.fromJson(turmaJson);
+      expect(presenca, TypeMatcher<Turma>());
+      expect(presenca.id, equals(turmaJson["id"]));
+    });
+  });
 }

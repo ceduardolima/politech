@@ -83,4 +83,20 @@ void main() {
         });
 
   });
+
+  group("Teste de serialização", () {
+    test("Aluno para json", () {
+      final presenca = Presenca.genId("123", true, DateTime.now(), "1");
+      final presencaJson = presenca.toJson();
+      expect(presencaJson, TypeMatcher<Map>());
+      expect(presencaJson["id"], equals(presenca.id));
+    });
+
+    test("Json to entity", () {
+      final presencaJson = {"id":"12345", "alunoId":"1234", "turmaId":"1234", "presenca":true};
+      final presenca = Aluno.fromJson(presencaJson);
+      expect(presenca, TypeMatcher<Presenca>());
+      expect(presenca.id, equals(presencaJson["id"]));
+    });
+  });
 }

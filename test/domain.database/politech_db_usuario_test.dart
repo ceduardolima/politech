@@ -35,10 +35,10 @@ void main() {
     });
 
     test("Procurar listar todos os usuarios", () async {
-      final usuario_1 = Usuario.gerarId("11111111111", "Eduardo", "carlos.costa@gmail.com");
-      final usuario_2 = Usuario.gerarId("22222222222", "Carlos", "carlos.costa@gmail.com");
-      final usuario_3 = Usuario.gerarId("33333333333", "Matheus", "carlos.costa@gmail.com");
-      final usuario_4 = Usuario.gerarId("44444444444", "Pablo", "carlos.costa@gmail.com");
+      final usuario_1 = Usuario.genId("11111111111", "Eduardo", "carlos.costa@gmail.com");
+      final usuario_2 = Usuario.genId("22222222222", "Carlos", "carlos.costa@gmail.com");
+      final usuario_3 = Usuario.genId("33333333333", "Matheus", "carlos.costa@gmail.com");
+      final usuario_4 = Usuario.genId("44444444444", "Pablo", "carlos.costa@gmail.com");
       usuarioDao.inserir(usuario_1);
       usuarioDao.inserir(usuario_2);
       usuarioDao.inserir(usuario_3);
@@ -48,10 +48,10 @@ void main() {
     });
 
     test("Procurar listar todos os usuarios usando limite", () async {
-      final usuario_1 = Usuario.gerarId("11111111111", "Eduardo", "carlos.costa@gmail.com");
-      final usuario_2 = Usuario.gerarId("22222222222", "Carlos", "carlos.costa@gmail.com");
-      final usuario_3 = Usuario.gerarId("33333333333", "Matheus", "carlos.costa@gmail.com");
-      final usuario_4 = Usuario.gerarId("44444444444", "Pablo", "carlos.costa@gmail.com");
+      final usuario_1 = Usuario.genId("11111111111", "Eduardo", "carlos.costa@gmail.com");
+      final usuario_2 = Usuario.genId("22222222222", "Carlos", "carlos.costa@gmail.com");
+      final usuario_3 = Usuario.genId("33333333333", "Matheus", "carlos.costa@gmail.com");
+      final usuario_4 = Usuario.genId("44444444444", "Pablo", "carlos.costa@gmail.com");
       usuarioDao.inserir(usuario_1);
       usuarioDao.inserir(usuario_2);
       usuarioDao.inserir(usuario_3);
@@ -61,7 +61,7 @@ void main() {
     });
 
     test("Atualizar um usuário", () async {
-      final usuario_1 = Usuario.gerarId("11111111111", "Eduardo", "carlos.costa@gmail.com");
+      final usuario_1 = Usuario.genId("11111111111", "Eduardo", "carlos.costa@gmail.com");
       usuarioDao.inserir(usuario_1);
       usuario_1.email = "carlos.lima@gmail.com";
       usuarioDao.atualizar(usuario_1);
@@ -70,11 +70,27 @@ void main() {
     });
 
     test("Excluir usuario", () async {
-      final usuario = Usuario.gerarId("111111111", "Eduardo", "gmail");
+      final usuario = Usuario.genId("111111111", "Eduardo", "gmail");
       usuarioDao.inserir(usuario);
       usuarioDao.excluir(usuario);
       final actual = await usuarioDao.procurarPorId(usuario.id);
       expect(actual, isNull);
+    });
+  });
+
+  group("Teste de serialização", () {
+    test("Aluno para json", () {
+      final usuario = Usuario.genId("123","Eduardo", "email");
+      final presencaJson = usuario.toJson();
+      expect(presencaJson, TypeMatcher<Map>());
+      expect(presencaJson["id"], equals(usuario.id));
+    });
+
+    test("Json to entity", () {
+      final usuarioJson = {"id":"12345","cpf":"1234", "nome":"eduardo", "email":"email"};
+      final usuario = Usuario.fromJson(usuarioJson);
+      expect(usuario, TypeMatcher<Usuario>());
+      expect(usuario.id, equals(usuarioJson["id"]));
     });
   });
 }

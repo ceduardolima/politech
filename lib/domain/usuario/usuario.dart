@@ -16,7 +16,7 @@ class Usuario {
 
   Usuario(this.id, this.cpf, this.nome, this.email);
 
-  Usuario.gerarId(this.cpf, this.nome, this.email) {
+  Usuario.genId(this.cpf, this.nome, this.email) {
     id = const Uuid().v4().toString();
   }
 

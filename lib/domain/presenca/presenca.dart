@@ -1,9 +1,12 @@
 import 'dart:ffi';
 
 import 'package:floor/floor.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:politech/domain/aluno/aluno.dart';
 import 'package:politech/domain/turma/turma.dart';
 import 'package:uuid/uuid.dart';
+
+part 'presenca.g.dart';
 
 @Entity(tableName: "presencas", primaryKeys: [
   "id"
@@ -13,6 +16,7 @@ import 'package:uuid/uuid.dart';
 ], indices: [
   Index(value: ["aluno_id"])
 ])
+@JsonSerializable()
 class Presenca {
   late final String id;
   @ColumnInfo(name: "aluno_id")
@@ -28,6 +32,12 @@ class Presenca {
   Presenca.genId(this.alunoId, this.presente, this.data, this.turmaId) {
     id = const Uuid().v4().toString();
   }
+
+  /// Transforma o Map na classe presenca
+  factory Presenca.fromJson(Map<String, dynamic> json) => _$PresencaFromJson(json);
+
+  /// Transforma a classe presenca em um Map
+  Map<String, dynamic> toJson() => _$PresencaToJson(this);
 
   @override
   String toString() {

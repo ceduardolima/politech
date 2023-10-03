@@ -1,11 +1,14 @@
 import 'package:floor/floor.dart';
-import 'package:politech/domain/aluno/aluno.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
+
+part 'turma.g.dart';
 
 @Entity(
   tableName: "turmas",
   primaryKeys: ["id"],
 )
+@JsonSerializable()
 class Turma {
   late final String id;
   final String nome;
@@ -15,6 +18,11 @@ class Turma {
   Turma.genId(this.nome) {
     id = const Uuid().v4().toString();
   }
+  /// Transforma o Map na classe turma
+  factory Turma.fromJson(Map<String, dynamic> json) => _$TurmaFromJson(json);
+
+  /// Transforma a classe turma em um Map
+  Map<String, dynamic> toJson() => _$TurmaToJson(this);
 
   @override
   String toString() {

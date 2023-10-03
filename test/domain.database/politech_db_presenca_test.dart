@@ -24,7 +24,7 @@ void main()  {
     });
 
     test("Listando alunos Presentes", () async {
-      int now = DateTime.now().millisecondsSinceEpoch;
+      final now = DateTime.now();
       final aluno_1 = Aluno.genId("12345", "Eduardo", "123");
       final aluno_2 = Aluno.genId("123456", "Eduardo", "1234");
       alunoDao.inserir(aluno_1);
@@ -37,9 +37,9 @@ void main()  {
     });
 
     test("Listando presenca de um aluno em um determinado período de tempo", () async {
-      int now = DateTime.now().millisecondsSinceEpoch;
-      int day_1 = DateTime(2023, 9, 29).millisecondsSinceEpoch;
-      int day_2 = DateTime(2023, 9, 30).millisecondsSinceEpoch;
+      final now = DateTime.now();
+      final day_1 = DateTime(2023, 9, 29);
+      final day_2 = DateTime(2023, 9, 30);
       final aluno_1 = Aluno.genId("12345", "Eduardo", "123");
       alunoDao.inserir(aluno_1);
       presencaDao.inserir(Presenca.genId(aluno_1.id, true, now));

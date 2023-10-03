@@ -343,7 +343,7 @@ class _$PresencaDao extends PresencaDao {
                   'id': item.id,
                   'aluno_id': item.alunoId,
                   'presente': item.presente ? 1 : 0,
-                  'data': item.data
+                  'data': _dateTimeConversor.encode(item.data)
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -379,14 +379,23 @@ class _$PresencaDao extends PresencaDao {
   @override
   Future<List<Presenca>> listarPresencasDoAluno(
     String alunoId,
-    int inicio,
-    int fim,
+    DateTime inicio,
+    DateTime fim,
     bool presente,
   ) async {
     return _queryAdapter.queryList(
         'SELECT * FROM presencas WHERE presente = ?4 AND data >= ?2 AND data <= ?3 AND aluno_id = ?1',
-        mapper: (Map<String, Object?> row) => Presenca(row['id'] as String, row['aluno_id'] as String, (row['presente'] as int) != 0, row['data'] as int),
-        arguments: [alunoId, inicio, fim, presente ? 1 : 0]);
+        mapper: (Map<String, Object?> row) => Presenca(
+            row['id'] as String,
+            row['aluno_id'] as String,
+            (row['presente'] as int) != 0,
+            _dateTimeConversor.decode(row['data'] as int)),
+        arguments: [
+          alunoId,
+          _dateTimeConversor.encode(inicio),
+          _dateTimeConversor.encode(fim),
+          presente ? 1 : 0
+        ]);
   }
 
   @override
@@ -446,3 +455,6 @@ class _$TurmaDao extends TurmaDao {
     await _turmaDeletionAdapter.delete(turma);
   }
 }
+
+// ignore_for_file: unused_element
+final _dateTimeConversor = DateTimeConversor();

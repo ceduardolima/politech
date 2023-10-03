@@ -16,7 +16,7 @@ class Presenca {
   @ColumnInfo(name: "aluno_id")
   final String alunoId;
   final bool presente;
-  final int data;
+  final DateTime data;
 
 
   Presenca(this.id, this.alunoId, this.presente, this.data);

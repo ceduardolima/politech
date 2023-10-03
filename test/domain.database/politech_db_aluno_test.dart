@@ -1,18 +1,25 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:politech/domain/aluno/aluno.dart';
 import 'package:politech/domain/database/dao/aluno_dao.dart';
+import 'package:politech/domain/database/dao/turma_dao.dart';
 import 'package:politech/domain/database/politech_db.dart';
+import 'package:politech/domain/turma/turma.dart';
 
 void main() {
   group("Test da Dao Aluno do banco de dados Politech", () {
     late PolitechDb banco;
     late AlunoDao alunoDao;
+    late TurmaDao turmaDao;
+    late Turma turma;
 
     setUp(() async {
       banco = await $FloorPolitechDb
           .inMemoryDatabaseBuilder()
           .build();
       alunoDao = banco.alunoDao;
+      turmaDao = banco.turmaDao;
+      turma = Turma.genId("Turma 01");
+      turmaDao.inserir(turma);
     });
 
     tearDown(() async {
@@ -20,14 +27,14 @@ void main() {
     });
 
     test("Inserindo aluno do banco de dados", () async {
-      Aluno aluno = Aluno.genId("12345", "Eduardo", "12345678901");
+      Aluno aluno = Aluno.genId("12345", "Eduardo", "12345678901", turma.id);
       alunoDao.inserir(aluno);
       final alunoInserido = await alunoDao.procurarPorId(aluno.id);
       expect(alunoInserido!.id, equals(aluno.id));
     });
 
     test("Procurando aluno pelo nome", () async {
-      Aluno aluno = Aluno.genId("12345", "Eduardo", "12345678901");
+      Aluno aluno = Aluno.genId("12345", "Eduardo", "12345678901", turma.id);
       alunoDao.inserir(aluno);
       final alunoInserido = await alunoDao.procurarPorNome(aluno.nome);
       expect(alunoInserido, isNotEmpty);
@@ -35,16 +42,16 @@ void main() {
     });
 
     test("Procurando aluno pelo número de inscrição", () async {
-      Aluno aluno = Aluno.genId("12345", "Eduardo", "12345678901");
+      Aluno aluno = Aluno.genId("12345", "Eduardo", "12345678901", turma.id);
       alunoDao.inserir(aluno);
       final alunoInserido = await alunoDao.procurarPorInscricao(aluno.numInscricao);
       expect(alunoInserido!.numInscricao, equals(aluno.numInscricao));
     });
 
     test("Listar todos os alunos", () async {
-      Aluno aluno_1 = Aluno.genId("12345", "Eduardo", "12345678901");
-      Aluno aluno_2 = Aluno.genId("12346", "Eduardo", "12345678902");
-      Aluno aluno_3 = Aluno.genId("12347", "Eduardo", "12345678903");
+      Aluno aluno_1 = Aluno.genId("12345", "Eduardo", "12345678901", turma.id);
+      Aluno aluno_2 = Aluno.genId("12346", "Eduardo", "12345678902", turma.id);
+      Aluno aluno_3 = Aluno.genId("12347", "Eduardo", "12345678903", turma.id);
       alunoDao.inserir(aluno_1);
       alunoDao.inserir(aluno_2);
       alunoDao.inserir(aluno_3);
@@ -53,9 +60,9 @@ void main() {
     });
 
     test("Listar todos os alunos com limite", () async {
-      Aluno aluno_1 = Aluno.genId("12345", "Eduardo", "12345678901");
-      Aluno aluno_2 = Aluno.genId("12346", "Eduardo", "12345678902");
-      Aluno aluno_3 = Aluno.genId("12347", "Eduardo", "12345678903");
+      Aluno aluno_1 = Aluno.genId("12345", "Eduardo", "12345678901", turma.id);
+      Aluno aluno_2 = Aluno.genId("12346", "Eduardo", "12345678902", turma.id);
+      Aluno aluno_3 = Aluno.genId("12347", "Eduardo", "12345678903", turma.id);
       alunoDao.inserir(aluno_1);
       alunoDao.inserir(aluno_2);
       alunoDao.inserir(aluno_3);
@@ -64,7 +71,7 @@ void main() {
     });
 
     test("Atualizar um aluno", () async {
-      Aluno aluno = Aluno.genId("12345", "Eduardo", "12345678901");
+      Aluno aluno = Aluno.genId("12345", "Eduardo", "12345678901", turma.id);
       alunoDao.inserir(aluno);
       aluno.nome = "Matheus";
       alunoDao.atualizar(aluno);
@@ -72,22 +79,19 @@ void main() {
       expect(alunoAtualizado!.nome, equals(aluno.nome));
     });
 
+
     test("Inserindo número de inscrição duplicado", () async {
-      Aluno aluno_1 = Aluno.genId("12345", "Eduardo", "12345678901");
-      Aluno aluno_2 = Aluno.genId("12345", "Eduardo", "12345678902");
+      Aluno aluno_1 = Aluno.genId("12345", "Eduardo", "12345678901", turma.id);
+      Aluno aluno_2 = Aluno.genId("12345", "Eduardo", "12345678902", turma.id);
       alunoDao.inserir(aluno_1);
-      alunoDao.inserir(aluno_2);
-      final alunos = await alunoDao.listar();
-      expect(alunos.length, equals(1));
+      expect(alunoDao.inserir(aluno_2), throwsA(isA<Exception>()));
     });
 
     test("Inserindo cpf duplicado", () async {
-      Aluno aluno_1 = Aluno.genId("12345", "Eduardo", "12345678901");
-      Aluno aluno_2 = Aluno.genId("12344", "Eduardo", "12345678901");
+      Aluno aluno_1 = Aluno.genId("12345", "Eduardo", "12345678901", turma.id);
+      Aluno aluno_2 = Aluno.genId("12344", "Eduardo", "12345678901", turma.id);
       alunoDao.inserir(aluno_1);
-      alunoDao.inserir(aluno_2);
-      final alunos = await alunoDao.listar();
-      expect(alunos.length, equals(1));
+      expect(alunoDao.inserir(aluno_2), throwsA(isA<Exception>()));
     });
   });
 }

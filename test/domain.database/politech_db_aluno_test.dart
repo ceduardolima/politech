@@ -41,28 +41,26 @@ void main() {
       expect(alunoInserido!.numInscricao, equals(aluno.numInscricao));
     });
 
-    test("Listar todos os alunos", () async* {
+    test("Listar todos os alunos", () async {
       Aluno aluno_1 = Aluno.genId("12345", "Eduardo", "12345678901");
       Aluno aluno_2 = Aluno.genId("12346", "Eduardo", "12345678902");
       Aluno aluno_3 = Aluno.genId("12347", "Eduardo", "12345678903");
       alunoDao.inserir(aluno_1);
       alunoDao.inserir(aluno_2);
       alunoDao.inserir(aluno_3);
-      final alunoStream = alunoDao.listar();
-      final tamanho = await alunoStream.length;
-      expect(tamanho, equals(3));
+      final alunos = await alunoDao.listar();
+      expect(alunos.length, equals(3));
     });
 
-    test("Listar todos os alunos com limite", () async* {
+    test("Listar todos os alunos com limite", () async {
       Aluno aluno_1 = Aluno.genId("12345", "Eduardo", "12345678901");
       Aluno aluno_2 = Aluno.genId("12346", "Eduardo", "12345678902");
       Aluno aluno_3 = Aluno.genId("12347", "Eduardo", "12345678903");
       alunoDao.inserir(aluno_1);
       alunoDao.inserir(aluno_2);
       alunoDao.inserir(aluno_3);
-      final alunosStream = alunoDao.listarComLimite(2);
-      final tamanho = await alunosStream.length;
-      expect(tamanho, equals(2));
+      final alunos = await alunoDao.listarComLimite(2);
+      expect(alunos.length, equals(2));
     });
 
     test("Atualizar um aluno", () async {
@@ -74,24 +72,22 @@ void main() {
       expect(alunoAtualizado!.nome, equals(aluno.nome));
     });
 
-    test("Inserindo número de inscrição duplicado", () async* {
+    test("Inserindo número de inscrição duplicado", () async {
       Aluno aluno_1 = Aluno.genId("12345", "Eduardo", "12345678901");
       Aluno aluno_2 = Aluno.genId("12345", "Eduardo", "12345678902");
       alunoDao.inserir(aluno_1);
       alunoDao.inserir(aluno_2);
-      final alunoStream = alunoDao.listar();
-      final tamanho = await alunoStream.length;
-      expect(tamanho, equals(1));
+      final alunos = await alunoDao.listar();
+      expect(alunos.length, equals(1));
     });
 
-    test("Inserindo cpf duplicado", () async* {
+    test("Inserindo cpf duplicado", () async {
       Aluno aluno_1 = Aluno.genId("12345", "Eduardo", "12345678901");
       Aluno aluno_2 = Aluno.genId("12344", "Eduardo", "12345678901");
       alunoDao.inserir(aluno_1);
       alunoDao.inserir(aluno_2);
-      final alunoStream = alunoDao.listar();
-      final tamanho = await alunoStream.length;
-      expect(tamanho, equals(1));
+      final alunos = await alunoDao.listar();
+      expect(alunos.length, equals(1));
     });
   });
 }

@@ -180,7 +180,7 @@ class _$UsuarioDao extends UsuarioDao {
   }
 
   @override
-  Future<List<Usuario?>> listarComLimite(int limite) async {
+  Future<List<Usuario>> listarComLimite(int limite) async {
     return _queryAdapter.queryList('SELECT * From usuario LIMIT ?1',
         mapper: (Map<String, Object?> row) => Usuario(
             row['id'] as String,
@@ -202,7 +202,7 @@ class _$UsuarioDao extends UsuarioDao {
   }
 
   @override
-  Future<List<Usuario?>> procurarPorNome(String nome) async {
+  Future<List<Usuario>> procurarPorNome(String nome) async {
     return _queryAdapter.queryList(
         'SELECT * FROM usuario WHERE nome LIKE ?1 LIMIT 20',
         mapper: (Map<String, Object?> row) => Usuario(
@@ -215,7 +215,7 @@ class _$UsuarioDao extends UsuarioDao {
 
   @override
   Future<void> inserir(Usuario usuario) async {
-    await _usuarioInsertionAdapter.insert(usuario, OnConflictStrategy.abort);
+    await _usuarioInsertionAdapter.insert(usuario, OnConflictStrategy.fail);
   }
 
   @override

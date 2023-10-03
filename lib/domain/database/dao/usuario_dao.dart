@@ -6,14 +6,14 @@ import '../../usuario/usuario.dart';
 
 @dao
 abstract class UsuarioDao {
-  @insert
+  @Insert(onConflict: OnConflictStrategy.fail)
   Future<void> inserir(Usuario usuario);
   
   @Query("SELECT * From usuario LIMIT 20")
   Future<List<Usuario>> listar();
 
   @Query("SELECT * From usuario LIMIT :limite")
-  Future<List<Usuario?>> listarComLimite(int limite);
+  Future<List<Usuario>> listarComLimite(int limite);
 
   @update
   Future<void> atualizar(Usuario usuario);
@@ -22,5 +22,5 @@ abstract class UsuarioDao {
   Future<Usuario?> procurarPorId(String id);
 
   @Query("SELECT * FROM usuario WHERE nome LIKE :nome LIMIT 20")
-  Future<List<Usuario?>> procurarPorNome(String nome);
+  Future<List<Usuario>> procurarPorNome(String nome);
 }

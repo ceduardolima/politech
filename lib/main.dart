@@ -1,7 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:politech/domain/database/dao/aluno_dao.dart';
+import 'package:politech/domain/database/dao/presenca_dao.dart';
+import 'package:politech/domain/database/dao/turma_dao.dart';
+import 'package:politech/domain/database/dao/usuario_dao.dart';
+import 'package:politech/domain/database/politech_db.dart';
 
 void main() {
-  runApp(const MyApp());
+  GetIt getIt = GetIt.instance;
+  getIt.registerSingletonAsync<PolitechDb>(
+      () async => $FloorPolitechDb.databaseBuilder('politech_db.db').build());
+  getIt.registerSingletonWithDependencies<UsuarioDao>(
+      () => GetIt.instance.get<PolitechDb>().usuarioDao,
+      dependsOn: [PolitechDb]);
+  getIt.registerSingletonWithDependencies<AlunoDao>(
+      () => GetIt.instance.get<PolitechDb>().alunoDao,
+      dependsOn: [PolitechDb]);
+  getIt.registerSingletonWithDependencies<TurmaDao>(
+      () => GetIt.instance.get<PolitechDb>().turmaDao,
+      dependsOn: [PolitechDb]);
+  getIt.registerSingletonWithDependencies<PresencaDao>(
+      () => GetIt.instance.get<PolitechDb>().presencaDao,
+      dependsOn: [PolitechDb]);
+  runApp(MaterialApp(
+    home: FutureBuilder(
+      future: GetIt.instance.allReady(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          return MyHomePage(title: "Politech");
+        } else {
+          return const Center(child: CircularProgressIndicator(),);
+        }
+      }
+      ,
+    ),
+  ));
 }
 
 class MyApp extends StatelessWidget {

@@ -101,4 +101,20 @@ void main() {
 
     });
   });
+
+  group("Teste de serialização", () {
+    test("Aluno para json", () {
+      final aluno = Aluno.genId("123", "eduardo", "11111", "turma 01");
+      final alunoJson = aluno.toJson();
+      expect(alunoJson, TypeMatcher<Map>());
+      expect(alunoJson["id"], equals(aluno.id));
+    });
+
+    test("Json to entity", () {
+      final alunoJson = {"id":"12345", "nome":"Eduardo", "numInscricao":"12345", "cpf":"12345", "turmaId":"turma"};
+      final aluno = Aluno.fromJson(alunoJson);
+      expect(aluno, TypeMatcher<Aluno>());
+      expect(aluno.id, equals(alunoJson["id"]));
+    });
+  });
 }

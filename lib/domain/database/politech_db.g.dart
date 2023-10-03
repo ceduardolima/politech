@@ -228,7 +228,7 @@ class _$AlunoDao extends AlunoDao {
   _$AlunoDao(
     this.database,
     this.changeListener,
-  )   : _queryAdapter = QueryAdapter(database, changeListener),
+  )   : _queryAdapter = QueryAdapter(database),
         _alunoInsertionAdapter = InsertionAdapter(
             database,
             'alunos',
@@ -237,8 +237,7 @@ class _$AlunoDao extends AlunoDao {
                   'num_inscricao': item.numInscricao,
                   'nome': item.nome,
                   'cpf': item.cpf
-                },
-            changeListener),
+                }),
         _alunoUpdateAdapter = UpdateAdapter(
             database,
             'alunos',
@@ -248,8 +247,7 @@ class _$AlunoDao extends AlunoDao {
                   'num_inscricao': item.numInscricao,
                   'nome': item.nome,
                   'cpf': item.cpf
-                },
-            changeListener);
+                });
 
   final sqflite.DatabaseExecutor database;
 
@@ -262,28 +260,24 @@ class _$AlunoDao extends AlunoDao {
   final UpdateAdapter<Aluno> _alunoUpdateAdapter;
 
   @override
-  Stream<List<Aluno>> listar() {
-    return _queryAdapter.queryListStream('SELECT * From alunos LIMIT 20',
+  Future<List<Aluno>> listar() async {
+    return _queryAdapter.queryList('SELECT * From alunos LIMIT 20',
         mapper: (Map<String, Object?> row) => Aluno(
             row['id'] as String,
             row['num_inscricao'] as String,
             row['nome'] as String,
-            row['cpf'] as String),
-        queryableName: 'alunos',
-        isView: false);
+            row['cpf'] as String));
   }
 
   @override
-  Stream<List<Aluno>> listarComLimite(int limite) {
-    return _queryAdapter.queryListStream('SELECT * From alunos LIMIT ?1',
+  Future<List<Aluno>> listarComLimite(int limite) async {
+    return _queryAdapter.queryList('SELECT * From alunos LIMIT ?1',
         mapper: (Map<String, Object?> row) => Aluno(
             row['id'] as String,
             row['num_inscricao'] as String,
             row['nome'] as String,
             row['cpf'] as String),
-        arguments: [limite],
-        queryableName: 'alunos',
-        isView: false);
+        arguments: [limite]);
   }
 
   @override
@@ -326,8 +320,8 @@ class _$AlunoDao extends AlunoDao {
   }
 
   @override
-  Future<void> atualizar(Aluno usuario) async {
-    await _alunoUpdateAdapter.update(usuario, OnConflictStrategy.abort);
+  Future<void> atualizar(Aluno aluno) async {
+    await _alunoUpdateAdapter.update(aluno, OnConflictStrategy.abort);
   }
 }
 

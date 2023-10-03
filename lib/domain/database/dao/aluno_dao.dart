@@ -7,13 +7,13 @@ abstract class AlunoDao {
   Future<void> inserir(Aluno aluno);
 
   @Query("SELECT * From alunos LIMIT 20")
-  Stream<List<Aluno>> listar();
+  Future<List<Aluno>> listar();
 
   @Query("SELECT * From alunos LIMIT :limite")
-  Stream<List<Aluno>> listarComLimite(int limite);
+  Future<List<Aluno>> listarComLimite(int limite);
 
   @update
-  Future<void> atualizar(Aluno usuario);
+  Future<void> atualizar(Aluno aluno);
 
   @Query("SELECT * From alunos WHERE id=:id")
   Future<Aluno?> procurarPorId(String id);

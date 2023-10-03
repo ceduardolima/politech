@@ -67,6 +67,8 @@ class _$PolitechDb extends PolitechDb {
 
   PresencaDao? _presencaDaoInstance;
 
+  TurmaDao? _turmaDaoInstance;
+
   Future<sqflite.Database> open(
     String path,
     List<Migration> migrations, [
@@ -95,11 +97,15 @@ class _$PolitechDb extends PolitechDb {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `presencas` (`id` TEXT NOT NULL, `aluno_id` TEXT NOT NULL, `presente` INTEGER NOT NULL, `data` INTEGER NOT NULL, FOREIGN KEY (`aluno_id`) REFERENCES `alunos` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
         await database.execute(
+            'CREATE TABLE IF NOT EXISTS `turmas` (`id` TEXT NOT NULL, `aluno_id` TEXT NOT NULL, `nome` TEXT NOT NULL, FOREIGN KEY (`aluno_id`) REFERENCES `alunos` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
+        await database.execute(
             'CREATE UNIQUE INDEX `index_alunos_num_inscricao` ON `alunos` (`num_inscricao`)');
         await database.execute(
             'CREATE UNIQUE INDEX `index_alunos_cpf` ON `alunos` (`cpf`)');
         await database.execute(
             'CREATE INDEX `index_presencas_aluno_id` ON `presencas` (`aluno_id`)');
+        await database.execute(
+            'CREATE UNIQUE INDEX `index_turmas_aluno_id` ON `turmas` (`aluno_id`)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -120,6 +126,11 @@ class _$PolitechDb extends PolitechDb {
   @override
   PresencaDao get presencaDao {
     return _presencaDaoInstance ??= _$PresencaDao(database, changeListener);
+  }
+
+  @override
+  TurmaDao get turmaDao {
+    return _turmaDaoInstance ??= _$TurmaDao(database, changeListener);
   }
 }
 
@@ -381,5 +392,57 @@ class _$PresencaDao extends PresencaDao {
   @override
   Future<void> inserir(Presenca presenca) async {
     await _presencaInsertionAdapter.insert(presenca, OnConflictStrategy.fail);
+  }
+}
+
+class _$TurmaDao extends TurmaDao {
+  _$TurmaDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
+        _turmaInsertionAdapter = InsertionAdapter(
+            database,
+            'turmas',
+            (Turma item) => <String, Object?>{
+                  'id': item.id,
+                  'aluno_id': item.alunoId,
+                  'nome': item.nome
+                }),
+        _turmaDeletionAdapter = DeletionAdapter(
+            database,
+            'turmas',
+            ['id'],
+            (Turma item) => <String, Object?>{
+                  'id': item.id,
+                  'aluno_id': item.alunoId,
+                  'nome': item.nome
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Turma> _turmaInsertionAdapter;
+
+  final DeletionAdapter<Turma> _turmaDeletionAdapter;
+
+  @override
+  Future<List<Aluno>> listarAlunos(String nomeDaTurma) async {
+    return _queryAdapter.queryList(
+        'SELECT alunos.* FROM turmas LEFT JOIN alunos ON alunos.id = turmas.aluno_id WHERE turmas.nome = ?1',
+        mapper: (Map<String, Object?> row) => Aluno(row['id'] as String, row['num_inscricao'] as String, row['nome'] as String, row['cpf'] as String),
+        arguments: [nomeDaTurma]);
+  }
+
+  @override
+  Future<void> inserir(Turma turma) async {
+    await _turmaInsertionAdapter.insert(turma, OnConflictStrategy.fail);
+  }
+
+  @override
+  Future<void> excluir(Turma turma) async {
+    await _turmaDeletionAdapter.delete(turma);
   }
 }

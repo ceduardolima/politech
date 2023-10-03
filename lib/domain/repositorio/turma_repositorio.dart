@@ -15,6 +15,10 @@ class TurmaRepositorio {
     await _turmaDao.inserir(turma);
   }
 
+  Future<void> inserirLista(List<Turma> turmas) async {
+    await _turmaDao.inserirLista(turmas);
+  }
+
   Stream<List<Turma>> assistirListaDeTurmas() async* {
     yield* _turmaDao.assistirListaDeTurmas();
   }

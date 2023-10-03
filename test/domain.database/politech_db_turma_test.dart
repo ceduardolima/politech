@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:politech/domain/aluno/aluno.dart';
 import 'package:politech/domain/database/dao/aluno_dao.dart';
@@ -33,6 +31,16 @@ void main() {
       final alunosDaTurma = await turmaDao.listarAlunos(turma.id);
       expect(alunosDaTurma, const TypeMatcher<List<Aluno>>());
       expect(alunosDaTurma, isNotEmpty);
+    });
+
+    test("Excluir turma", () async* {
+      final turma = Turma.genId("Turma 01");
+      turmaDao.inserir(turma);
+      turmaDao.excluir(turma);
+      final stream = turmaDao.assistirListaDeTurmas();
+      final alunosDaTurma = await stream.first;
+      expect(alunosDaTurma, const TypeMatcher<List<Turma>>());
+      expect(alunosDaTurma, isEmpty);
     });
   });
 }

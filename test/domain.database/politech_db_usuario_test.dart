@@ -68,5 +68,13 @@ void main() {
       Usuario? actual = await usuarioDao.procurarPorId(usuario_1.id);
       expect(actual!.email, equals(usuario_1.email));
     });
+
+    test("Excluir usuario", () async {
+      final usuario = Usuario.gerarId("111111111", "Eduardo", "gmail");
+      usuarioDao.inserir(usuario);
+      usuarioDao.excluir(usuario);
+      final actual = await usuarioDao.procurarPorId(usuario.id);
+      expect(actual, isNull);
+    });
   });
 }

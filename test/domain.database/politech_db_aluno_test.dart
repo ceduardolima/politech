@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:politech/domain/aluno/aluno.dart';
 import 'package:politech/domain/database/dao/aluno_dao.dart';
@@ -52,9 +54,7 @@ void main() {
       Aluno aluno_1 = Aluno.genId("12345", "Eduardo", "12345678901", turma.id);
       Aluno aluno_2 = Aluno.genId("12346", "Eduardo", "12345678902", turma.id);
       Aluno aluno_3 = Aluno.genId("12347", "Eduardo", "12345678903", turma.id);
-      alunoDao.inserir(aluno_1);
-      alunoDao.inserir(aluno_2);
-      alunoDao.inserir(aluno_3);
+      alunoDao.inserirLista([aluno_1, aluno_2, aluno_3]);
       final alunos = await alunoDao.listar();
       expect(alunos.length, equals(3));
     });
@@ -63,9 +63,7 @@ void main() {
       Aluno aluno_1 = Aluno.genId("12345", "Eduardo", "12345678901", turma.id);
       Aluno aluno_2 = Aluno.genId("12346", "Eduardo", "12345678902", turma.id);
       Aluno aluno_3 = Aluno.genId("12347", "Eduardo", "12345678903", turma.id);
-      alunoDao.inserir(aluno_1);
-      alunoDao.inserir(aluno_2);
-      alunoDao.inserir(aluno_3);
+      alunoDao.inserirLista([aluno_1, aluno_2, aluno_3]);
       final alunos = await alunoDao.listarComLimite(2);
       expect(alunos.length, equals(2));
     });
@@ -92,6 +90,15 @@ void main() {
       Aluno aluno_2 = Aluno.genId("12344", "Eduardo", "12345678901", turma.id);
       alunoDao.inserir(aluno_1);
       expect(alunoDao.inserir(aluno_2), throwsA(isA<Exception>()));
+    });
+
+    test("Exluir aluno", () async {
+      Aluno aluno_1 = Aluno.genId("12345", "Eduardo", "12345678901", turma.id);
+      alunoDao.inserir(aluno_1);
+      alunoDao.excluir(aluno_1);
+      final alunos = await alunoDao.listar();
+      expect(alunos, isEmpty);
+
     });
   });
 }

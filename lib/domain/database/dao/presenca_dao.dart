@@ -15,5 +15,5 @@ abstract class PresencaDao {
   
   @Query("SELECT * FROM presencas "
       "WHERE presente = :presente AND data >= :inicio AND data <= :fim AND aluno_id = :alunoId")
-  Future<List<Presenca>> listarPresencasDoAluno(String alunoId, int inicio, int fim, bool presente);
+  Future<List<Presenca>> listarPresencasDoAluno(String alunoId, DateTime inicio, DateTime fim, bool presente);
 }

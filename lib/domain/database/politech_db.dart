@@ -9,10 +9,12 @@ import 'package:politech/domain/database/dao/usuario_dao.dart';
 import 'package:politech/domain/presenca/presenca.dart';
 import 'package:politech/domain/turma/turma.dart';
 import 'package:politech/domain/usuario/usuario.dart';
+import 'package:politech/utils/conversores/date_time_conversor.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
 
 part 'politech_db.g.dart';
 
+@TypeConverters([DateTimeConversor])
 @Database(version: 2, entities: [Usuario, Aluno, Presenca, Turma])
 abstract class PolitechDb extends FloorDatabase {
   UsuarioDao get usuarioDao;

@@ -12,6 +12,9 @@ abstract class UsuarioDao {
   @Query("SELECT * From usuario LIMIT 20")
   Future<List<Usuario>> listar();
 
+  @Query("SELECT * From usuario")
+  Stream<List<Usuario>> assistirListaDeUsuarios();
+
   @Query("SELECT * From usuario LIMIT :limite")
   Future<List<Usuario>> listarComLimite(int limite);
 

@@ -9,6 +9,9 @@ abstract class AlunoDao {
   @Query("SELECT * From alunos LIMIT 20")
   Future<List<Aluno>> listar();
 
+  @Query("SELECT * From alunos")
+  Stream<List<Aluno>> assistirListaAluno();
+
   @Query("SELECT * From alunos LIMIT :limite")
   Future<List<Aluno>> listarComLimite(int limite);
 

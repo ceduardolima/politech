@@ -93,19 +93,17 @@ class _$PolitechDb extends PolitechDb {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `usuario` (`id` TEXT NOT NULL, `cpf` TEXT NOT NULL, `nome` TEXT NOT NULL, `email` TEXT NOT NULL, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `alunos` (`id` TEXT NOT NULL, `num_inscricao` TEXT NOT NULL, `nome` TEXT NOT NULL, `cpf` TEXT NOT NULL, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `alunos` (`id` TEXT NOT NULL, `num_inscricao` TEXT NOT NULL, `turma_id` TEXT NOT NULL, `nome` TEXT NOT NULL, `cpf` TEXT NOT NULL, FOREIGN KEY (`turma_id`) REFERENCES `turmas` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `presencas` (`id` TEXT NOT NULL, `aluno_id` TEXT NOT NULL, `presente` INTEGER NOT NULL, `data` INTEGER NOT NULL, FOREIGN KEY (`aluno_id`) REFERENCES `alunos` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `presencas` (`id` TEXT NOT NULL, `aluno_id` TEXT NOT NULL, `turma_id` TEXT NOT NULL, `presente` INTEGER NOT NULL, `data` INTEGER NOT NULL, FOREIGN KEY (`aluno_id`) REFERENCES `alunos` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`turma_id`) REFERENCES `turmas` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `turmas` (`id` TEXT NOT NULL, `aluno_id` TEXT NOT NULL, `nome` TEXT NOT NULL, FOREIGN KEY (`aluno_id`) REFERENCES `alunos` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `turmas` (`id` TEXT NOT NULL, `nome` TEXT NOT NULL, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE UNIQUE INDEX `index_alunos_num_inscricao` ON `alunos` (`num_inscricao`)');
         await database.execute(
             'CREATE UNIQUE INDEX `index_alunos_cpf` ON `alunos` (`cpf`)');
         await database.execute(
             'CREATE INDEX `index_presencas_aluno_id` ON `presencas` (`aluno_id`)');
-        await database.execute(
-            'CREATE UNIQUE INDEX `index_turmas_aluno_id` ON `turmas` (`aluno_id`)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -138,7 +136,7 @@ class _$UsuarioDao extends UsuarioDao {
   _$UsuarioDao(
     this.database,
     this.changeListener,
-  )   : _queryAdapter = QueryAdapter(database),
+  )   : _queryAdapter = QueryAdapter(database, changeListener),
         _usuarioInsertionAdapter = InsertionAdapter(
             database,
             'usuario',
@@ -147,7 +145,8 @@ class _$UsuarioDao extends UsuarioDao {
                   'cpf': item.cpf,
                   'nome': item.nome,
                   'email': item.email
-                }),
+                },
+            changeListener),
         _usuarioUpdateAdapter = UpdateAdapter(
             database,
             'usuario',
@@ -157,7 +156,8 @@ class _$UsuarioDao extends UsuarioDao {
                   'cpf': item.cpf,
                   'nome': item.nome,
                   'email': item.email
-                });
+                },
+            changeListener);
 
   final sqflite.DatabaseExecutor database;
 
@@ -177,6 +177,18 @@ class _$UsuarioDao extends UsuarioDao {
             row['cpf'] as String,
             row['nome'] as String,
             row['email'] as String));
+  }
+
+  @override
+  Stream<List<Usuario>> assistirListaDeUsuarios() {
+    return _queryAdapter.queryListStream('SELECT * From usuario',
+        mapper: (Map<String, Object?> row) => Usuario(
+            row['id'] as String,
+            row['cpf'] as String,
+            row['nome'] as String,
+            row['email'] as String),
+        queryableName: 'usuario',
+        isView: false);
   }
 
   @override
@@ -228,16 +240,18 @@ class _$AlunoDao extends AlunoDao {
   _$AlunoDao(
     this.database,
     this.changeListener,
-  )   : _queryAdapter = QueryAdapter(database),
+  )   : _queryAdapter = QueryAdapter(database, changeListener),
         _alunoInsertionAdapter = InsertionAdapter(
             database,
             'alunos',
             (Aluno item) => <String, Object?>{
                   'id': item.id,
                   'num_inscricao': item.numInscricao,
+                  'turma_id': item.turmaId,
                   'nome': item.nome,
                   'cpf': item.cpf
-                }),
+                },
+            changeListener),
         _alunoUpdateAdapter = UpdateAdapter(
             database,
             'alunos',
@@ -245,9 +259,11 @@ class _$AlunoDao extends AlunoDao {
             (Aluno item) => <String, Object?>{
                   'id': item.id,
                   'num_inscricao': item.numInscricao,
+                  'turma_id': item.turmaId,
                   'nome': item.nome,
                   'cpf': item.cpf
-                });
+                },
+            changeListener);
 
   final sqflite.DatabaseExecutor database;
 
@@ -266,7 +282,21 @@ class _$AlunoDao extends AlunoDao {
             row['id'] as String,
             row['num_inscricao'] as String,
             row['nome'] as String,
-            row['cpf'] as String));
+            row['cpf'] as String,
+            row['turma_id'] as String));
+  }
+
+  @override
+  Stream<List<Aluno>> assistirListaAluno() {
+    return _queryAdapter.queryListStream('SELECT * From alunos',
+        mapper: (Map<String, Object?> row) => Aluno(
+            row['id'] as String,
+            row['num_inscricao'] as String,
+            row['nome'] as String,
+            row['cpf'] as String,
+            row['turma_id'] as String),
+        queryableName: 'alunos',
+        isView: false);
   }
 
   @override
@@ -276,7 +306,8 @@ class _$AlunoDao extends AlunoDao {
             row['id'] as String,
             row['num_inscricao'] as String,
             row['nome'] as String,
-            row['cpf'] as String),
+            row['cpf'] as String,
+            row['turma_id'] as String),
         arguments: [limite]);
   }
 
@@ -287,7 +318,8 @@ class _$AlunoDao extends AlunoDao {
             row['id'] as String,
             row['num_inscricao'] as String,
             row['nome'] as String,
-            row['cpf'] as String),
+            row['cpf'] as String,
+            row['turma_id'] as String),
         arguments: [id]);
   }
 
@@ -299,7 +331,8 @@ class _$AlunoDao extends AlunoDao {
             row['id'] as String,
             row['num_inscricao'] as String,
             row['nome'] as String,
-            row['cpf'] as String),
+            row['cpf'] as String,
+            row['turma_id'] as String),
         arguments: [nome]);
   }
 
@@ -310,7 +343,8 @@ class _$AlunoDao extends AlunoDao {
             row['id'] as String,
             row['num_inscricao'] as String,
             row['nome'] as String,
-            row['cpf'] as String),
+            row['cpf'] as String,
+            row['turma_id'] as String),
         arguments: [inscricao]);
   }
 
@@ -329,16 +363,18 @@ class _$PresencaDao extends PresencaDao {
   _$PresencaDao(
     this.database,
     this.changeListener,
-  )   : _queryAdapter = QueryAdapter(database),
+  )   : _queryAdapter = QueryAdapter(database, changeListener),
         _presencaInsertionAdapter = InsertionAdapter(
             database,
             'presencas',
             (Presenca item) => <String, Object?>{
                   'id': item.id,
                   'aluno_id': item.alunoId,
+                  'turma_id': item.turmaId,
                   'presente': item.presente ? 1 : 0,
                   'data': _dateTimeConversor.encode(item.data)
-                });
+                },
+            changeListener);
 
   final sqflite.DatabaseExecutor database;
 
@@ -349,6 +385,21 @@ class _$PresencaDao extends PresencaDao {
   final InsertionAdapter<Presenca> _presencaInsertionAdapter;
 
   @override
+  Stream<List<Presenca>> assistirListaDePresencaDaTurma(String turmaId) {
+    return _queryAdapter.queryListStream(
+        'SELECT presencas.* FROM turmas LEFT JOIN presencas ON turmas.id= presencas.turma_id WHERE presencas.turma_id = ?1',
+        mapper: (Map<String, Object?> row) => Presenca(
+            row['id'] as String,
+            row['aluno_id'] as String,
+            (row['presente'] as int) != 0,
+            _dateTimeConversor.decode(row['data'] as int),
+            row['turma_id'] as String),
+        arguments: [turmaId],
+        queryableName: 'turmas',
+        isView: false);
+  }
+
+  @override
   Future<List<Aluno>> listarAlunosPresentes() async {
     return _queryAdapter.queryList(
         'SELECT alunos.* FROM alunos LEFT JOIN presencas ON alunos.id = presencas.aluno_id WHERE presente = 1',
@@ -356,7 +407,8 @@ class _$PresencaDao extends PresencaDao {
             row['id'] as String,
             row['num_inscricao'] as String,
             row['nome'] as String,
-            row['cpf'] as String));
+            row['cpf'] as String,
+            row['turma_id'] as String));
   }
 
   @override
@@ -367,7 +419,8 @@ class _$PresencaDao extends PresencaDao {
             row['id'] as String,
             row['num_inscricao'] as String,
             row['nome'] as String,
-            row['cpf'] as String));
+            row['cpf'] as String,
+            row['turma_id'] as String));
   }
 
   @override
@@ -383,7 +436,8 @@ class _$PresencaDao extends PresencaDao {
             row['id'] as String,
             row['aluno_id'] as String,
             (row['presente'] as int) != 0,
-            _dateTimeConversor.decode(row['data'] as int)),
+            _dateTimeConversor.decode(row['data'] as int),
+            row['turma_id'] as String),
         arguments: [
           alunoId,
           _dateTimeConversor.encode(inicio),
@@ -402,24 +456,18 @@ class _$TurmaDao extends TurmaDao {
   _$TurmaDao(
     this.database,
     this.changeListener,
-  )   : _queryAdapter = QueryAdapter(database),
+  )   : _queryAdapter = QueryAdapter(database, changeListener),
         _turmaInsertionAdapter = InsertionAdapter(
             database,
             'turmas',
-            (Turma item) => <String, Object?>{
-                  'id': item.id,
-                  'aluno_id': item.alunoId,
-                  'nome': item.nome
-                }),
+            (Turma item) => <String, Object?>{'id': item.id, 'nome': item.nome},
+            changeListener),
         _turmaDeletionAdapter = DeletionAdapter(
             database,
             'turmas',
             ['id'],
-            (Turma item) => <String, Object?>{
-                  'id': item.id,
-                  'aluno_id': item.alunoId,
-                  'nome': item.nome
-                });
+            (Turma item) => <String, Object?>{'id': item.id, 'nome': item.nome},
+            changeListener);
 
   final sqflite.DatabaseExecutor database;
 
@@ -432,11 +480,20 @@ class _$TurmaDao extends TurmaDao {
   final DeletionAdapter<Turma> _turmaDeletionAdapter;
 
   @override
-  Future<List<Aluno>> listarAlunos(String nomeDaTurma) async {
+  Stream<List<Turma>> assistirListaDeTurmas() {
+    return _queryAdapter.queryListStream('SELECT * FROM turmas',
+        mapper: (Map<String, Object?> row) =>
+            Turma(row['id'] as String, row['nome'] as String),
+        queryableName: 'turmas',
+        isView: false);
+  }
+
+  @override
+  Future<List<Aluno>> listarAlunos(String turmaId) async {
     return _queryAdapter.queryList(
-        'SELECT alunos.* FROM turmas LEFT JOIN alunos ON alunos.id = turmas.aluno_id WHERE turmas.nome = ?1',
-        mapper: (Map<String, Object?> row) => Aluno(row['id'] as String, row['num_inscricao'] as String, row['nome'] as String, row['cpf'] as String),
-        arguments: [nomeDaTurma]);
+        'SELECT alunos.* FROM turmas LEFT JOIN alunos ON alunos.turma_id = turmas.id WHERE turmas.id = ?1',
+        mapper: (Map<String, Object?> row) => Aluno(row['id'] as String, row['num_inscricao'] as String, row['nome'] as String, row['cpf'] as String, row['turma_id'] as String),
+        arguments: [turmaId]);
   }
 
   @override

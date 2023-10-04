@@ -69,6 +69,8 @@ class _$PolitechDb extends PolitechDb {
 
   TurmaDao? _turmaDaoInstance;
 
+  ChamadaDao? _chamadaDaoInstance;
+
   Future<sqflite.Database> open(
     String path,
     List<Migration> migrations, [
@@ -98,6 +100,8 @@ class _$PolitechDb extends PolitechDb {
             'CREATE TABLE IF NOT EXISTS `presencas` (`id` TEXT NOT NULL, `aluno_id` TEXT NOT NULL, `turma_id` TEXT NOT NULL, `presente` INTEGER NOT NULL, `data` INTEGER NOT NULL, FOREIGN KEY (`aluno_id`) REFERENCES `alunos` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`turma_id`) REFERENCES `turmas` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `turmas` (`id` TEXT NOT NULL, `nome` TEXT NOT NULL, PRIMARY KEY (`id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `chamadas` (`id` TEXT NOT NULL, `data` INTEGER NOT NULL, `turma_id` TEXT NOT NULL, FOREIGN KEY (`turma_id`) REFERENCES `turmas` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE UNIQUE INDEX `index_alunos_num_inscricao` ON `alunos` (`num_inscricao`)');
         await database.execute(
@@ -129,6 +133,11 @@ class _$PolitechDb extends PolitechDb {
   @override
   TurmaDao get turmaDao {
     return _turmaDaoInstance ??= _$TurmaDao(database, changeListener);
+  }
+
+  @override
+  ChamadaDao get chamadaDao {
+    return _chamadaDaoInstance ??= _$ChamadaDao(database, changeListener);
   }
 }
 
@@ -576,6 +585,97 @@ class _$TurmaDao extends TurmaDao {
   @override
   Future<void> excluir(Turma turma) async {
     await _turmaDeletionAdapter.delete(turma);
+  }
+}
+
+class _$ChamadaDao extends ChamadaDao {
+  _$ChamadaDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database, changeListener),
+        _chamadaInsertionAdapter = InsertionAdapter(
+            database,
+            'chamadas',
+            (Chamada item) => <String, Object?>{
+                  'id': item.id,
+                  'data': _dateTimeConversor.encode(item.data),
+                  'turma_id': item.turmaId
+                },
+            changeListener),
+        _chamadaUpdateAdapter = UpdateAdapter(
+            database,
+            'chamadas',
+            ['id'],
+            (Chamada item) => <String, Object?>{
+                  'id': item.id,
+                  'data': _dateTimeConversor.encode(item.data),
+                  'turma_id': item.turmaId
+                },
+            changeListener),
+        _chamadaDeletionAdapter = DeletionAdapter(
+            database,
+            'chamadas',
+            ['id'],
+            (Chamada item) => <String, Object?>{
+                  'id': item.id,
+                  'data': _dateTimeConversor.encode(item.data),
+                  'turma_id': item.turmaId
+                },
+            changeListener);
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Chamada> _chamadaInsertionAdapter;
+
+  final UpdateAdapter<Chamada> _chamadaUpdateAdapter;
+
+  final DeletionAdapter<Chamada> _chamadaDeletionAdapter;
+
+  @override
+  Stream<List<Chamada>> assistirChamadasDaTurma(String turmaId) {
+    return _queryAdapter.queryListStream(
+        'SELECT * FROM chamadas WHERE turma_id = ?1',
+        mapper: (Map<String, Object?> row) => Chamada(
+            row['id'] as String,
+            _dateTimeConversor.decode(row['data'] as int),
+            row['turma_id'] as String),
+        arguments: [turmaId],
+        queryableName: 'chamadas',
+        isView: false);
+  }
+
+  @override
+  Future<List<Chamada>> listarChamadasDaTurma(String turmaId) async {
+    return _queryAdapter.queryList('SELECT * FROM chamadas WHERE turma_id = ?1',
+        mapper: (Map<String, Object?> row) => Chamada(
+            row['id'] as String,
+            _dateTimeConversor.decode(row['data'] as int),
+            row['turma_id'] as String),
+        arguments: [turmaId]);
+  }
+
+  @override
+  Future<void> inserir(Chamada chamada) async {
+    await _chamadaInsertionAdapter.insert(chamada, OnConflictStrategy.fail);
+  }
+
+  @override
+  Future<void> inserirLista(List<Chamada> chamada) async {
+    await _chamadaInsertionAdapter.insertList(chamada, OnConflictStrategy.fail);
+  }
+
+  @override
+  Future<void> atualizar(Chamada chamada) async {
+    await _chamadaUpdateAdapter.update(chamada, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> excluir(Chamada chamada) async {
+    await _chamadaDeletionAdapter.delete(chamada);
   }
 }
 

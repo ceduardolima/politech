@@ -23,8 +23,8 @@ class TurmaRepositorio {
     yield* _turmaDao.assistirListaDeTurmas();
   }
 
-  Future<List<Aluno>> listarAlunos(String nomeDaTurma) async {
-    return await _turmaDao.listarAlunos(nomeDaTurma);
+  Future<List<Aluno>> listarAlunos(String turmaId) async {
+    return await _turmaDao.listarAlunos(turmaId);
   }
 
   Future<void> excluir(Turma turma) async {

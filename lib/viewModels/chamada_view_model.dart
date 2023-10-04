@@ -7,22 +7,26 @@ import '../domain/chamada/chamada.dart';
 class ChamadaViewModel extends ChangeNotifier {
   late ChamadaRepositorio _chamadaRepositorio;
   List<Chamada> _chamadas = [];
-  final String _turmaId;
 
-  ChamadaViewModel(this._turmaId) {
+  ChamadaViewModel() {
     _chamadaRepositorio = GetIt.instance.get<ChamadaRepositorio>();
   }
 
-  ChamadaViewModel.comTurma(this._turmaId) {
+  ChamadaViewModel.comTurma(String turmaId) {
     _chamadaRepositorio = GetIt.instance.get<ChamadaRepositorio>();
-    assistirChamada();
+    assistirChamada(turmaId);
   }
 
-  void assistirChamada() {
-    _chamadaRepositorio.assistirChamadasDaTurma(_turmaId).listen((lista) {
+  void assistirChamada(String turmaId) {
+    _chamadaRepositorio.assistirChamadasDaTurma(turmaId).listen((lista) {
       _chamadas = lista;
       notifyListeners();
     });
+  }
+
+  Future<void> inserir(Chamada chamada) async {
+    await _chamadaRepositorio.inserir(chamada);
+    notifyListeners();
   }
 
   List<Chamada> get listaChamadas => _chamadas;

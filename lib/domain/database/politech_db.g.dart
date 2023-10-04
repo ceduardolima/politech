@@ -97,7 +97,7 @@ class _$PolitechDb extends PolitechDb {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `alunos` (`id` TEXT NOT NULL, `num_inscricao` TEXT NOT NULL, `turma_id` TEXT NOT NULL, `nome` TEXT NOT NULL, `cpf` TEXT NOT NULL, FOREIGN KEY (`turma_id`) REFERENCES `turmas` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `presencas` (`id` TEXT NOT NULL, `aluno_id` TEXT NOT NULL, `turma_id` TEXT NOT NULL, `presente` INTEGER NOT NULL, `data` INTEGER NOT NULL, FOREIGN KEY (`aluno_id`) REFERENCES `alunos` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`turma_id`) REFERENCES `turmas` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `presencas` (`id` TEXT NOT NULL, `aluno_id` TEXT NOT NULL, `chamada_id` TEXT NOT NULL, `presente` INTEGER NOT NULL, `data` INTEGER NOT NULL, FOREIGN KEY (`aluno_id`) REFERENCES `alunos` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`chamada_id`) REFERENCES `chamadas` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `turmas` (`id` TEXT NOT NULL, `nome` TEXT NOT NULL, PRIMARY KEY (`id`))');
         await database.execute(
@@ -421,7 +421,7 @@ class _$PresencaDao extends PresencaDao {
             (Presenca item) => <String, Object?>{
                   'id': item.id,
                   'aluno_id': item.alunoId,
-                  'turma_id': item.turmaId,
+                  'chamada_id': item.chamadaId,
                   'presente': item.presente ? 1 : 0,
                   'data': _dateTimeConversor.encode(item.data)
                 },
@@ -433,7 +433,7 @@ class _$PresencaDao extends PresencaDao {
             (Presenca item) => <String, Object?>{
                   'id': item.id,
                   'aluno_id': item.alunoId,
-                  'turma_id': item.turmaId,
+                  'chamada_id': item.chamadaId,
                   'presente': item.presente ? 1 : 0,
                   'data': _dateTimeConversor.encode(item.data)
                 },
@@ -450,17 +450,17 @@ class _$PresencaDao extends PresencaDao {
   final DeletionAdapter<Presenca> _presencaDeletionAdapter;
 
   @override
-  Stream<List<Presenca>> assistirListaDePresencaDaTurma(String turmaId) {
+  Stream<List<Presenca>> assistirListaDePresencaDaTurma(String chamadaId) {
     return _queryAdapter.queryListStream(
-        'SELECT presencas.* FROM turmas LEFT JOIN presencas ON turmas.id= presencas.turma_id WHERE presencas.turma_id = ?1',
+        'SELECT * FROM presencas WHERE chamada_id = ?1',
         mapper: (Map<String, Object?> row) => Presenca(
             row['id'] as String,
             row['aluno_id'] as String,
             (row['presente'] as int) != 0,
             _dateTimeConversor.decode(row['data'] as int),
-            row['turma_id'] as String),
-        arguments: [turmaId],
-        queryableName: 'turmas',
+            row['chamada_id'] as String),
+        arguments: [chamadaId],
+        queryableName: 'presencas',
         isView: false);
   }
 
@@ -502,7 +502,7 @@ class _$PresencaDao extends PresencaDao {
             row['aluno_id'] as String,
             (row['presente'] as int) != 0,
             _dateTimeConversor.decode(row['data'] as int),
-            row['turma_id'] as String),
+            row['chamada_id'] as String),
         arguments: [
           alunoId,
           _dateTimeConversor.encode(inicio),

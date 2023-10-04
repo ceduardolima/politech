@@ -1,4 +1,0 @@
-enum PresencaEnum {
-  PRESENTE,
-  AUSENTE;
-}

@@ -21,6 +21,11 @@ class TurmaViewModel extends ChangeNotifier {
     });
   }
 
+  Future<void> inserir(Turma turma) async {
+    await _turmaRepositorio.inserir(turma);
+    assistirListaDeTurmas();
+  }
+
   List<Turma> get listaDeTurmas => _turmas;
 
   TurmaRepositorio get turma => _turmaRepositorio;

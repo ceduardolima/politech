@@ -10,8 +10,8 @@ abstract class PresencaDao {
   @Insert(onConflict: OnConflictStrategy.fail)
   Future<void> inserirLista(List<Presenca> presenca);
 
-  @Query("SELECT presencas.* FROM turmas LEFT JOIN presencas ON turmas.id= presencas.turma_id WHERE presencas.turma_id = :turmaId")
-  Stream<List<Presenca>> assistirListaDePresencaDaTurma(String turmaId);
+  @Query("SELECT * FROM presencas WHERE chamada_id = :chamadaId")
+  Stream<List<Presenca>> assistirListaDePresencaDaTurma(String chamadaId);
 
   @Query("SELECT alunos.* FROM alunos LEFT JOIN presencas ON alunos.id = presencas.aluno_id WHERE presente = 1")
   Future<List<Aluno>> listarAlunosPresentes();

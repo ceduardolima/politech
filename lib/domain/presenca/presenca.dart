@@ -6,13 +6,16 @@ import 'package:politech/domain/aluno/aluno.dart';
 import 'package:politech/domain/turma/turma.dart';
 import 'package:uuid/uuid.dart';
 
+import '../chamada/chamada.dart';
+
 part 'presenca.g.dart';
 
 @Entity(tableName: "presencas", primaryKeys: [
   "id"
 ], foreignKeys: [
   ForeignKey(childColumns: ["aluno_id"], parentColumns: ["id"], entity: Aluno),
-  ForeignKey(childColumns: ["turma_id"], parentColumns: ["id"], entity: Turma)
+  ForeignKey(
+      childColumns: ["chamada_id"], parentColumns: ["id"], entity: Chamada)
 ], indices: [
   Index(value: ["aluno_id"])
 ])
@@ -21,27 +24,28 @@ class Presenca {
   late final String id;
   @ColumnInfo(name: "aluno_id")
   final String alunoId;
-  @ColumnInfo(name: "turma_id")
-  final String turmaId;
+  @ColumnInfo(name: "chamada_id")
+  final String chamadaId;
   final bool presente;
   final DateTime data;
 
+  Presenca(this.id, this.alunoId, this.presente, this.data, this.chamadaId);
 
-  Presenca(this.id, this.alunoId, this.presente, this.data, this.turmaId);
-
-  Presenca.genId(this.alunoId, this.presente, this.data, this.turmaId) {
+  Presenca.genId(this.alunoId, this.presente, this.data, this.chamadaId) {
     id = const Uuid().v4().toString();
   }
 
   /// Transforma o Map na classe presenca
-  factory Presenca.fromJson(Map<String, dynamic> json) => _$PresencaFromJson(json);
+  factory Presenca.fromJson(Map<String, dynamic> json) =>
+      _$PresencaFromJson(json);
 
   /// Transforma a classe presenca em um Map
   Map<String, dynamic> toJson() => _$PresencaToJson(this);
 
+
   @override
   String toString() {
-    return 'Presenca{id: $id, alunoId: $alunoId, turma: $turmaId, presenca: $presente}';
+    return 'Presenca{id: $id, alunoId: $alunoId, chamadaId: $chamadaId, presente: $presente, data: $data}';
   }
 
   @override

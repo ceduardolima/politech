@@ -18,10 +18,17 @@ class PresencaViewModel extends ChangeNotifier {
   }
 
   void _assistirListaDePresencaDaTurma(String turmaId) {
-    _presencaRepositorio.assistirListaDePresencaDaTurma(turmaId).listen((lista) {
+    _presencaRepositorio.assistirListaDePresencaDaTurma(turmaId).listen((
+        lista) {
       _presencas = lista;
       notifyListeners();
     });
+  }
+
+  Future<void> inserirAlunosPresentes(String chamadaId, DateTime data, List<String> listaAlunoId) async {
+    List<Presenca> presencas = listaAlunoId.map((e) =>
+        Presenca.genId(e, true, data, chamadaId)).toList();
+    await _presencaRepositorio.inserirLista(presencas);
   }
 
   List<Presenca> get listaDePresencas => _presencas;

@@ -638,7 +638,7 @@ class _$ChamadaDao extends ChamadaDao {
   @override
   Stream<List<Chamada>> assistirChamadasDaTurma(String turmaId) {
     return _queryAdapter.queryListStream(
-        'SELECT * FROM chamadas WHERE turma_id = ?1',
+        'SELECT * FROM chamadas WHERE turma_id = ?1 ORDER BY data DESC',
         mapper: (Map<String, Object?> row) => Chamada(
             row['id'] as String,
             _dateTimeConversor.decode(row['data'] as int),

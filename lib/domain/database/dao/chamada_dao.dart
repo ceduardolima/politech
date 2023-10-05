@@ -9,10 +9,10 @@ abstract class ChamadaDao {
   @Insert(onConflict: OnConflictStrategy.fail)
   Future<void> inserirLista(List<Chamada> chamada);
 
-  @Query("SELECT * FROM chamadas WHERE turma_id = :turmaId")
+  @Query("SELECT * FROM chamadas WHERE turma_id = :turmaId ORDER BY data DESC")
   Stream<List<Chamada>> assistirChamadasDaTurma(String turmaId);
 
-  @Query("SELECT * FROM chamadas WHERE turma_id = :turmaId")
+  @Query("SELECT * FROM chamadas WHERE turma_id = :turmaId ORDER BY data DESC")
   Future<List<Chamada>> listarChamadasDaTurma(String turmaId);
 
   @update

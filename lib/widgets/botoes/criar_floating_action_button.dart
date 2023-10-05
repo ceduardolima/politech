@@ -24,7 +24,7 @@ class CriarFloatActionButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         padding:
             const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 15),
-        backgroundColor: ColorsTheme().lightColorsScheme().secondary,
+        backgroundColor: ColorsTheme().lightColorsScheme().primary,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       ),
     );

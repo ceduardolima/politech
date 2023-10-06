@@ -18,9 +18,9 @@ class _AutoAutenticacaoState extends State<AutoAutenticacao> {
     if (autenticacao.carregando) {
       return carregando();
     } else if (autenticacao.usuario == null) {
-      return const TelaLogin();
+      return TelaLogin();
     } else {
-      return Container();
+      return TelaLogin();
     }
   }
 

@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
+import 'package:politech/domain/repositorio/usuario_repositorio.dart';
 import 'package:politech/firebase_options.dart';
 
 import '../domain/database/dao/aluno_dao.dart';
@@ -31,5 +32,8 @@ Future<void> initConfig() async {
   getIt.registerSingletonWithDependencies<PresencaDao>(
           () => GetIt.instance.get<PolitechDb>().presencaDao,
       dependsOn: [PolitechDb]);
+  getIt.registerSingletonWithDependencies<UsuarioRepositorio>(
+          () => UsuarioRepositorio(),
+      dependsOn: [PolitechDb, UsuarioDao]);
 }
 

@@ -23,4 +23,8 @@ class UsuarioViewModel extends ChangeNotifier {
   List<Usuario> get listaUsuario => _listaUsuario;
 
   UsuarioRepositorio get usuario => _usuarioRepositorio;
+
+  Future<void> inserir(Usuario usuario) async {
+    await _usuarioRepositorio.inserir(usuario);
+  }
 }

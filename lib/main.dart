@@ -5,7 +5,11 @@ import 'package:politech/domain/database/dao/presenca_dao.dart';
 import 'package:politech/domain/database/dao/turma_dao.dart';
 import 'package:politech/domain/database/dao/usuario_dao.dart';
 import 'package:politech/domain/database/politech_db.dart';
+import 'package:politech/paginas/login_pagina.dart';
 import 'package:politech/theme/colors_theme.dart';
+import 'package:politech/viewModels/usuario_view_model.dart';
+
+import 'domain/usuario/usuario.dart';
 
 void main() {
   criarSingletons();
@@ -14,18 +18,10 @@ void main() {
       theme: ThemeData(
         colorScheme: ColorsTheme().lightColorsScheme()
       ),
-      home: FutureBuilder(
-        future: GetIt.instance.allReady(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            return MyHomePage(title: "Politech");
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
-      ),
+      initialRoute: 'lib/paginas/', // Rota inicial como '/login'
+      routes: {
+        'lib/paginas/': (context) => TelaLogin(),
+      },
     ),
   );
 }

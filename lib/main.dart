@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:politech/domain/database/dao/aluno_dao.dart';
 import 'package:politech/domain/database/dao/chamada_dao.dart';
 import 'package:politech/domain/database/dao/presenca_dao.dart';
@@ -34,6 +35,13 @@ void main() {
         ChangeNotifierProvider(create: (_) => UsuarioViewModel())
       ],
       child: MaterialApp(
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate
+        ],
+        supportedLocales: const [Locale('pt', 'BR')],
+        locale: const Locale('pt', 'BR'),
         theme: ThemeData(colorScheme: ColorsTheme().lightColorsScheme()),
         home: FutureBuilder(
           future: GetIt.instance.allReady(),

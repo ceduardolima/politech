@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:politech/paginas/telacadastro.dart';
 import 'package:politech/theme/colors_theme.dart';
+import 'package:politech/widgets/container/login_container.dart';
 
 class TelaLogin extends StatelessWidget {
   const TelaLogin({Key? key});
@@ -10,25 +11,8 @@ class TelaLogin extends StatelessWidget {
     return Scaffold(
       backgroundColor: ColorsTheme().lightColorsScheme().primary,
       body: Center(
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8.0),
-            boxShadow: [
-              BoxShadow(
-                color: ColorsTheme()
-                    .lightColorsScheme()
-                    .primaryContainer
-                    .withOpacity(0.5),
-                spreadRadius: 0,
-                blurRadius: 7,
-                offset: Offset(5, 6),
-              ),
-            ],
-          ),
-          width: 300.0,
-          padding: const EdgeInsets.all(30.0),
-          child: Column(
+        child: LoginContainer(
+          filho: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -40,6 +24,9 @@ class TelaLogin extends StatelessWidget {
                   fontSize: 24,
                 ),
                 textAlign: TextAlign.center,
+              ),
+              const SizedBox(
+                height: 20,
               ),
               const TextField(
                 decoration: InputDecoration(

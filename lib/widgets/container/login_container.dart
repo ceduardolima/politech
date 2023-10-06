@@ -36,7 +36,7 @@ class LoginContainer extends StatelessWidget {
             padding: const EdgeInsets.only(left: 8.0, top: 8.0),
             child: botaoVoltar ??
                 const SizedBox(
-                  height: 0,
+                  height: 25,
                 ),
           ),
           Padding(

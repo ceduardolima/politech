@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:politech/paginas/cadastro_pagina.dart';
 import 'package:politech/servicos/servico_autenticacao.dart';
 import 'package:politech/theme/colors_theme.dart';
@@ -20,16 +21,18 @@ class _TelaLoginState extends State<TelaLogin> {
   void login(BuildContext context) async {
     final estadoAtual = _chaveLogin.currentState;
     if (estadoAtual != null) {
-      estadoAtual.save();
-      String usuario = estadoAtual.fields["usuario"]!.value;
-      String senha = estadoAtual.value["senha"]!.value;
-      try {
-        setState(() => _carregando = true);
-        await context.watch<ServicoAutenticacao>().login(usuario, senha);
-      } on AuthException catch (e) {
-        setState(() => _carregando = false);
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(e.mensagemErro)));
+      final valido = estadoAtual.saveAndValidate();
+      if (valido) {
+        String usuario = estadoAtual.fields["usuario"]!.value;
+        String senha = estadoAtual.value["senha"]!.value;
+        try {
+          setState(() => _carregando = true);
+          await context.watch<ServicoAutenticacao>().login(usuario, senha);
+        } on AuthException catch (e) {
+          setState(() => _carregando = false);
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(e.mensagemErro)));
+        }
       }
     }
   }
@@ -60,21 +63,28 @@ class _TelaLoginState extends State<TelaLogin> {
                 ),
                 FormBuilderTextField(
                   name: "usuario",
-                  decoration: const InputDecoration(
-                    labelText: 'Nome de Usuário',
-                  ),
+                  decoration:
+                      const InputDecoration(labelText: 'Email', helperText: ""),
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(
+                        errorText: "Campo obrigatorio"),
+                    FormBuilderValidators.email(errorText: "Email inválido"),
+                  ]),
                 ),
                 FormBuilderTextField(
                   name: "senha",
                   obscureText: true, // Para ocultar a senha enquanto é digitada
-                  decoration: const InputDecoration(
-                    labelText: 'Senha',
-                  ),
+                  decoration:
+                      const InputDecoration(labelText: 'Senha', helperText: ""),
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(
+                        errorText: "Campo obrigatorio"),
+                  ]),
                 ),
                 const SizedBox(height: 30.0),
                 ElevatedButton(
-                  style:
-                      ElevatedButton.styleFrom(fixedSize: const Size.fromHeight(50)),
+                  style: ElevatedButton.styleFrom(
+                      fixedSize: const Size.fromHeight(50)),
                   onPressed: () => login(context),
                   child: _carregando
                       ? const CircularProgressIndicator(

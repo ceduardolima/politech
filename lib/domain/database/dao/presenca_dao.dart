@@ -23,6 +23,11 @@ abstract class PresencaDao {
       "WHERE presente = :presente AND data >= :inicio AND data <= :fim AND aluno_id = :alunoId")
   Future<List<Presenca>> listarPresencasDoAluno(String alunoId, DateTime inicio, DateTime fim, bool presente);
 
+  @Query("SELECT alunos.* FROM alunos "
+      "LEFT JOIN presencas ON alunos.id = presencas.aluno_id "
+      "WHERE presencas.chamada_id = :chamadaId AND presencas.presente = :presenca")
+  Future<List<Aluno>> listarAlunosDaChamada(String chamadaId, bool presenca);
+
   @delete
   Future<void> excluir(Presenca presenca);
 }

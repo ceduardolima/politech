@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
 import 'package:politech/domain/repositorio/presenca_repositorio.dart';
 
+import '../domain/aluno/aluno.dart';
 import '../domain/presenca/presenca.dart';
 
 class PresencaViewModel extends ChangeNotifier {
@@ -29,6 +30,10 @@ class PresencaViewModel extends ChangeNotifier {
     List<Presenca> presencas = listaAlunoId.map((e) =>
         Presenca.genId(e, true, data, chamadaId)).toList();
     await _presencaRepositorio.inserirLista(presencas);
+  }
+
+  Future<List<Aluno>> listarAlunosDaChamada(String chamadaId, bool presente) async {
+    return await _presencaRepositorio.listarAlunosDaChamada(chamadaId, presente);
   }
 
   List<Presenca> get listaDePresencas => _presencas;

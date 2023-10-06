@@ -34,6 +34,10 @@ class PresencaRepositorio {
     return await _presencaDao.listarPresencasDoAluno(alunoId, inicio, fim, presente);
   }
 
+  Future<List<Aluno>> listarAlunosDaChamada(String chamadaId, bool presente) async {
+    return await _presencaDao.listarAlunosDaChamada(chamadaId, presente);
+  }
+
   Future<void> excluir(Presenca presenca) async {
     await _presencaDao.excluir(presenca);
   }

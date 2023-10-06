@@ -5,7 +5,7 @@ import 'package:politech/domain/database/dao/presenca_dao.dart';
 import 'package:politech/domain/database/dao/turma_dao.dart';
 import 'package:politech/domain/database/dao/usuario_dao.dart';
 import 'package:politech/domain/database/politech_db.dart';
-import 'package:politech/paginas/telalogin.dart';
+import 'package:politech/paginas/login_pagina.dart';
 import 'package:politech/theme/colors_theme.dart';
 import 'package:politech/viewModels/usuario_view_model.dart';
 

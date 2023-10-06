@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:politech/paginas/telacadastro.dart';
+import 'package:politech/paginas/login_pagina.dart';
 import 'package:politech/theme/colors_theme.dart';
 import 'package:politech/widgets/container/login_container.dart';
 
-class TelaLogin extends StatelessWidget {
-  const TelaLogin({Key? key});
+class TelaCadastro extends StatelessWidget {
+  const TelaCadastro({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,10 +12,16 @@ class TelaLogin extends StatelessWidget {
       backgroundColor: ColorsTheme().lightColorsScheme().primary,
       body: Center(
         child: LoginContainer(
+          botaoVoltar: IconButton(
+            alignment: Alignment.topLeft,
+            onPressed: () => Navigator.pop(context),
+            icon: const Icon(Icons.arrow_back, color: Colors.grey,),
+            style: IconButton.styleFrom(alignment: Alignment.centerLeft),
+          ),
           filho: Column(
-            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               const Text(
                 'PoliTech',
@@ -34,14 +40,37 @@ class TelaLogin extends StatelessWidget {
                 ),
               ),
               const TextField(
+                decoration: InputDecoration(
+                  labelText: 'Cpf',
+                ),
+              ),
+              const TextField(
+                decoration: InputDecoration(
+                  labelText: 'E-mail',
+                ),
+              ),
+              const TextField(
+                decoration: InputDecoration(
+                  labelText: 'Confirme o E-mail',
+                ),
+              ),
+              const TextField(
                 obscureText: true, // Para ocultar a senha enquanto é digitada
                 decoration: InputDecoration(
                   labelText: 'Senha',
                 ),
               ),
-              SizedBox(height: 30.0),
+              const TextField(
+                obscureText: true, // Para ocultar a senha enquanto é digitada
+                decoration: InputDecoration(
+                  labelText: 'Confirmar senha',
+                ),
+              ),
+              const SizedBox(height: 30.0),
               ElevatedButton(
-                style: ElevatedButton.styleFrom(fixedSize: Size.fromHeight(40)),
+                child: const Text('Cadastrar'),
+                style: ElevatedButton.styleFrom(
+                    fixedSize: const Size.fromHeight(40)),
                 onPressed: () {
                   // Mostrar o texto "Testar banco" ao pressionar o botão
                   showDialog(
@@ -52,7 +81,7 @@ class TelaLogin extends StatelessWidget {
                         actions: <Widget>[
                           TextButton(
                             onPressed: () {
-                              Navigator.of(context).pop();
+                              Navigator.of(context).pop(); // Feche o diálogo
                             },
                             child: const Text('Fechar'),
                           ),
@@ -61,20 +90,6 @@ class TelaLogin extends StatelessWidget {
                     },
                   );
                 },
-                child: const Text('Login', style: TextStyle(fontSize: 16),),
-              ),
-              const SizedBox(height: 10,),
-              TextButton(
-                onPressed: () {
-                  // Navegar para a TelaCadastro quando o botão "Cadastrar" for pressionado
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TelaCadastro(),
-                    ),
-                  );
-                },
-                child: Text('Realize seu cadastro aqui!'),
               ),
             ],
           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:politech/paginas/telalogin.dart';
 import 'package:politech/theme/colors_theme.dart';
+import 'package:politech/widgets/container/login_container.dart';
 
 class TelaCadastro extends StatelessWidget {
   const TelaCadastro({super.key});
@@ -10,31 +11,29 @@ class TelaCadastro extends StatelessWidget {
     return Scaffold(
       backgroundColor: ColorsTheme().lightColorsScheme().primary,
       body: Center(
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8.0),
-            // Opcional: adiciona bordas arredondadas
-            boxShadow: [
-              BoxShadow(
-                color: ColorsTheme()
-                    .lightColorsScheme()
-                    .primaryContainer
-                    .withOpacity(0.5), // Cor da sombra
-                spreadRadius: 0, // Raio de propagação da sombra
-                blurRadius: 7, // Raio de desfoque da sombra
-                offset: Offset(5, 6), // Deslocamento da sombra
-              ),
-            ],
+        child: LoginContainer(
+          botaoVoltar: IconButton(
+            alignment: Alignment.topLeft,
+            onPressed: () => Navigator.pop(context),
+            icon: const Icon(Icons.arrow_back, color: Colors.grey,),
+            style: IconButton.styleFrom(alignment: Alignment.centerLeft),
           ),
-          height: 400.0,
-          //Altura desejada
-          width: 300.0,
-          padding: const EdgeInsets.all(30.0),
-          // Espaçamento interno
-          child: Column(
+          filho: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
+              const Text(
+                'PoliTech',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold, // Texto em negrito
+                  fontSize: 24,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(
+                height: 20,
+              ),
               const TextField(
                 decoration: InputDecoration(
                   labelText: 'Nome de Usuário',
@@ -58,44 +57,30 @@ class TelaCadastro extends StatelessWidget {
                   labelText: 'Confirme o E-mail',
                 ),
               ),
-              const SizedBox(height: 20.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  ElevatedButton(
-                    onPressed: () {
-                      // Navegar para a TelaCadastro quando o botão "Cadastro" for pressionado
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => TelaLogin()),
+              const SizedBox(height: 30.0),
+              ElevatedButton(
+                child: const Text('Cadastrar'),
+                style: ElevatedButton.styleFrom(
+                    fixedSize: const Size.fromHeight(40)),
+                onPressed: () {
+                  // Mostrar o texto "Testar banco" ao pressionar o botão
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Testar banco'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(); // Feche o diálogo
+                            },
+                            child: const Text('Fechar'),
+                          ),
+                        ],
                       );
                     },
-                    child: Text('Login'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Mostrar o texto "Testar banco" ao pressionar o botão
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text('Testar banco'),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context)
-                                      .pop(); // Feche o diálogo
-                                },
-                                child: const Text('Fechar'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                    child: Text('Cadastrar'),
-                  ),
-                ],
+                  );
+                },
               ),
             ],
           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:politech/paginas/telacadastro.dart';
 
 class TelaLogin extends StatelessWidget {
   const TelaLogin({super.key});
@@ -66,25 +67,13 @@ class TelaLogin extends StatelessWidget {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          // Mostrar o texto "Testar banco" ao pressionar o botão
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text('Testar banco'),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop(); // Feche o diálogo
-                                    },
-                                    child: const Text('Fechar'),
-                                  ),
-                                ],
-                              );
-                            },
+                          // Navegar para a TelaCadastro quando o botão "Cadastro" for pressionado
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => TelaCadastro()),
                           );
                         },
-                        child: Text('Cadastro'),
+                        child: Text('Cadastrar'),
                       ),
                   ],
                 ),

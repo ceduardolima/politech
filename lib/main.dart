@@ -1,31 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:politech/domain/database/dao/aluno_dao.dart';
-import 'package:politech/domain/database/dao/chamada_dao.dart';
-import 'package:politech/domain/database/dao/presenca_dao.dart';
-import 'package:politech/domain/database/dao/turma_dao.dart';
-import 'package:politech/domain/database/dao/usuario_dao.dart';
-import 'package:politech/domain/database/politech_db.dart';
 import 'package:politech/paginas/login_pagina.dart';
 import 'package:politech/theme/colors_theme.dart';
 import 'package:politech/viewModels/usuario_view_model.dart';
-import 'package:politech/domain/repositorio/aluno_repositorio.dart';
-import 'package:politech/domain/repositorio/chamada_repositorio.dart';
-import 'package:politech/domain/repositorio/presenca_repositorio.dart';
-import 'package:politech/domain/repositorio/turma_repositorio.dart';
-import 'package:politech/domain/repositorio/usuario_repositorio.dart';
-import 'package:politech/paginas/chamada_pagina.dart';
 import 'package:politech/viewModels/aluno_view_model.dart';
 import 'package:politech/viewModels/chamada_view_model.dart';
 import 'package:politech/viewModels/presenca_view_model.dart';
 import 'package:politech/viewModels/turma_view_model.dart';
 import 'package:provider/provider.dart';
 
-import 'domain/turma/turma.dart';
+import 'config/init_config.dart';
 
-void main() {
-  criarSingletons();
+
+void main() async {
+  await initConfig();
   runApp(
     MultiProvider(
       providers: [
@@ -64,40 +53,4 @@ void main() {
       ),
     ),
   );
-}
-
-void criarSingletons() {
-  GetIt getIt = GetIt.instance;
-  getIt.registerSingletonAsync<PolitechDb>(
-      () async => $FloorPolitechDb.databaseBuilder('politech_db.db').build());
-  getIt.registerSingletonWithDependencies<UsuarioDao>(
-      () => GetIt.instance.get<PolitechDb>().usuarioDao,
-      dependsOn: [PolitechDb]);
-  getIt.registerSingletonWithDependencies<AlunoDao>(
-      () => GetIt.instance.get<PolitechDb>().alunoDao,
-      dependsOn: [PolitechDb]);
-  getIt.registerSingletonWithDependencies<TurmaDao>(
-      () => GetIt.instance.get<PolitechDb>().turmaDao,
-      dependsOn: [PolitechDb]);
-  getIt.registerSingletonWithDependencies<PresencaDao>(
-      () => GetIt.instance.get<PolitechDb>().presencaDao,
-      dependsOn: [PolitechDb]);
-  getIt.registerSingletonWithDependencies<ChamadaDao>(
-      () => GetIt.instance.get<PolitechDb>().chamadaDao,
-      dependsOn: [PolitechDb]);
-  getIt.registerSingletonWithDependencies<UsuarioRepositorio>(
-      () => UsuarioRepositorio(),
-      dependsOn: [PolitechDb, UsuarioDao]);
-  getIt.registerSingletonWithDependencies<AlunoRepositorio>(
-      () => AlunoRepositorio(),
-      dependsOn: [PolitechDb, AlunoDao]);
-  getIt.registerSingletonWithDependencies<TurmaRepositorio>(
-      () => TurmaRepositorio(),
-      dependsOn: [PolitechDb, TurmaDao]);
-  getIt.registerSingletonWithDependencies<PresencaRepositorio>(
-      () => PresencaRepositorio(),
-      dependsOn: [PolitechDb, PresencaDao]);
-  getIt.registerSingletonWithDependencies<ChamadaRepositorio>(
-      () => ChamadaRepositorio(),
-      dependsOn: [PolitechDb, ChamadaDao]);
 }

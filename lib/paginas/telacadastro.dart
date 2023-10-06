@@ -40,9 +40,8 @@ class TelaCadastro extends StatelessWidget {
                 ),
               ),
               const TextField(
-                obscureText: true, // Para ocultar a senha enquanto é digitada
                 decoration: InputDecoration(
-                  labelText: 'Senha',
+                  labelText: 'Cpf',
                 ),
               ),
               const TextField(
@@ -55,6 +54,18 @@ class TelaCadastro extends StatelessWidget {
                 obscureText: true, // Para ocultar a senha enquanto é digitada
                 decoration: InputDecoration(
                   labelText: 'Confirme o E-mail',
+                ),
+              ),
+              const TextField(
+                obscureText: true, // Para ocultar a senha enquanto é digitada
+                decoration: InputDecoration(
+                  labelText: 'Senha',
+                ),
+              ),
+              const TextField(
+                obscureText: true, // Para ocultar a senha enquanto é digitada
+                decoration: InputDecoration(
+                  labelText: 'Confirmar senha',
                 ),
               ),
               const SizedBox(height: 30.0),

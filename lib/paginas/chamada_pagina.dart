@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:intl/intl.dart';
 import 'package:politech/domain/chamada/chamada.dart';
 import 'package:politech/domain/turma/turma.dart';
 import 'package:politech/theme/colors_theme.dart';
@@ -9,6 +10,7 @@ import 'package:politech/viewModels/presenca_view_model.dart';
 import 'package:politech/viewModels/turma_view_model.dart';
 import 'package:politech/widgets/botoes/criar_floating_action_button.dart';
 import 'package:politech/widgets/dialogs/dialog_botao_unico.dart';
+import 'package:politech/widgets/dialogs/dialog_mostrar_presenca.dart';
 import 'package:politech/widgets/itens_lista/chamada_item_lista.dart';
 import 'package:provider/provider.dart';
 
@@ -31,27 +33,29 @@ class ChamadaPagina extends StatelessWidget {
     final hoje = DateTime.now();
     final chamada = Chamada.genId(hoje, turma.id);
     await chamadaViewModel.inserir(chamada);
-    await presencaViewModel.inserirAlunosPresentes(chamada.id, hoje, chamadaJson);
+    await presencaViewModel.inserirAlunosPresentes(
+        chamada.id, hoje, chamadaJson);
   }
 
   /// Transforma a lista de alunos em uma FormBuilderFieldOption Para ser usada
   /// no FormBuilderFieldOption
-  List<FormBuilderFieldOption<String>> listaAlunoParaListaOption(List<Aluno> alunos) =>
+  List<FormBuilderFieldOption<String>> listaAlunoParaListaOption(
+          List<Aluno> alunos) =>
       alunos
           .map((aluno) => FormBuilderFieldOption(
-        value: aluno.id,
-        child: Row(
-          children: [
-            const Spacer(),
-            Text(
-              aluno.nome,
-              style: const TextStyle(fontSize: 16),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
-      ))
+                value: aluno.id,
+                child: Row(
+                  children: [
+                    const Spacer(),
+                    Text(
+                      aluno.nome,
+                      style: const TextStyle(fontSize: 16),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ))
           .toList(growable: false);
 
   /// Cria a diallog onde será feita a chamada
@@ -134,7 +138,24 @@ class ChamadaPagina extends StatelessWidget {
                 Chamada chamada = chamadaViewModel.listaChamadas[index];
                 return ChamadaItemLista(
                   chamada: chamada,
-                  onPressed: () {},
+                  onPressed: () async {
+                    final chamadaData = chamada.data;
+                    final alunos = await presencaViewModel
+                        .listarAlunosDaChamada(chamada.id, true);
+                    debugPrint(alunos.toString());
+                    if (context.mounted) {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return DialogMostrarPresenca(
+                            alunos: alunos,
+                            data:
+                                "${chamadaData.day}/${chamadaData.month}/${chamadaData.year}",
+                          );
+                        },
+                      );
+                    }
+                  },
                   onDelete: () {},
                 );
               }),

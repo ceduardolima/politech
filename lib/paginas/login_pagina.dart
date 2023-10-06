@@ -1,20 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:politech/paginas/cadastro_pagina.dart';
+import 'package:politech/servicos/servico_autenticacao.dart';
 import 'package:politech/theme/colors_theme.dart';
 import 'package:politech/widgets/container/login_container.dart';
-import 'package:politech/paginas/cadastro_turma_pagina.dart';
+import 'package:provider/provider.dart';
 
-class TelaLogin extends StatelessWidget {
+class TelaLogin extends StatefulWidget {
   TelaLogin({Key? key});
-  final _chaveLogin = GlobalKey<FormBuilderState>();
 
-  void login() {
+  @override
+  State<TelaLogin> createState() => _TelaLoginState();
+}
+
+class _TelaLoginState extends State<TelaLogin> {
+  final _chaveLogin = GlobalKey<FormBuilderState>();
+  bool _carregando = false;
+
+  void login(BuildContext context) async {
     final estadoAtual = _chaveLogin.currentState;
     if (estadoAtual != null) {
       estadoAtual.save();
-      String usuario = estadoAtual.value["usuario"];
-      String senha = estadoAtual.value["senha"];
+      String usuario = estadoAtual.fields["usuario"]!.value;
+      String senha = estadoAtual.value["senha"]!.value;
+      try {
+        setState(() => _carregando = true);
+        await context.watch<ServicoAutenticacao>().login(usuario, senha);
+      } on AuthException catch (e) {
+        setState(() => _carregando = false);
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.mensagemErro)));
+      }
     }
   }
 
@@ -57,29 +73,21 @@ class TelaLogin extends StatelessWidget {
                 ),
                 const SizedBox(height: 30.0),
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(fixedSize: Size.fromHeight(40)),
-                  onPressed: () {
-                    // Mostrar o texto "Testar banco" ao pressionar o botão
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('Testar banco'),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('Fechar'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                  child: const Text('Login', style: TextStyle(fontSize: 16),),
+                  style:
+                      ElevatedButton.styleFrom(fixedSize: const Size.fromHeight(50)),
+                  onPressed: () => login(context),
+                  child: _carregando
+                      ? const CircularProgressIndicator(
+                          color: Colors.white,
+                        )
+                      : const Text(
+                          'Login',
+                          style: TextStyle(fontSize: 18),
+                        ),
                 ),
-                const SizedBox(height: 10,),
+                const SizedBox(
+                  height: 10,
+                ),
                 TextButton(
                   onPressed: () {
                     // Navegar para a TelaCadastro quando o botão "Cadastrar" for pressionado

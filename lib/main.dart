@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:politech/domain/database/dao/aluno_dao.dart';
 import 'package:politech/domain/database/dao/chamada_dao.dart';
 import 'package:politech/domain/database/dao/presenca_dao.dart';
@@ -27,21 +28,27 @@ void main() {
   criarSingletons();
   runApp(
     MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (_) => ChamadaViewModel()),
-          ChangeNotifierProvider(create: (_) => TurmaViewModel()),
-          ChangeNotifierProvider(create: (_) => AlunoViewModel()),
-          ChangeNotifierProvider(create: (_) => PresencaViewModel()),
-          ChangeNotifierProvider(create: (_) => UsuarioViewModel())
+      providers: [
+        ChangeNotifierProvider(create: (_) => ChamadaViewModel()),
+        ChangeNotifierProvider(create: (_) => TurmaViewModel()),
+        ChangeNotifierProvider(create: (_) => AlunoViewModel()),
+        ChangeNotifierProvider(create: (_) => PresencaViewModel()),
+        ChangeNotifierProvider(create: (_) => UsuarioViewModel())
+      ],
+      child: MaterialApp(
+        theme: ThemeData(colorScheme: ColorsTheme().lightColorsScheme()),
+        initialRoute: 'lib/paginas/',
+        // Rota inicial como '/login'
+        routes: {
+          'lib/paginas/': (context) => TelaLogin(),
+        },
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate
         ],
-    child: MaterialApp(
-      theme: ThemeData(
-        colorScheme: ColorsTheme().lightColorsScheme()
-      ),
-      initialRoute: 'lib/paginas/', // Rota inicial como '/login'
-      routes: {
-        'lib/paginas/': (context) => TelaLogin(),
-      },
+        supportedLocales: const [Locale('pt', 'BR')],
+        locale: const Locale('pt', 'BR'),
         home: FutureBuilder(
           future: GetIt.instance.allReady(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {

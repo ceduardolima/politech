@@ -512,6 +512,17 @@ class _$PresencaDao extends PresencaDao {
   }
 
   @override
+  Future<List<Aluno>> listarAlunosDaChamada(
+    String chamadaId,
+    bool presenca,
+  ) async {
+    return _queryAdapter.queryList(
+        'SELECT alunos.* FROM alunos LEFT JOIN presencas ON alunos.id = presencas.aluno_id WHERE presencas.chamada_id = ?1 AND presencas.presente = ?2',
+        mapper: (Map<String, Object?> row) => Aluno(row['id'] as String, row['num_inscricao'] as String, row['nome'] as String, row['cpf'] as String, row['turma_id'] as String),
+        arguments: [chamadaId, presenca ? 1 : 0]);
+  }
+
+  @override
   Future<void> inserir(Presenca presenca) async {
     await _presencaInsertionAdapter.insert(presenca, OnConflictStrategy.fail);
   }
@@ -650,7 +661,8 @@ class _$ChamadaDao extends ChamadaDao {
 
   @override
   Future<List<Chamada>> listarChamadasDaTurma(String turmaId) async {
-    return _queryAdapter.queryList('SELECT * FROM chamadas WHERE turma_id = ?1',
+    return _queryAdapter.queryList(
+        'SELECT * FROM chamadas WHERE turma_id = ?1 ORDER BY data DESC',
         mapper: (Map<String, Object?> row) => Chamada(
             row['id'] as String,
             _dateTimeConversor.decode(row['data'] as int),

@@ -13,9 +13,40 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
   List<Turma> turmas = [];
   TextEditingController nomeController = TextEditingController();
   TextEditingController codigoController = TextEditingController();
-  TextEditingController diaController = TextEditingController();
-  TextEditingController horaInicioController = TextEditingController();
-  TextEditingController horaFimController = TextEditingController();
+  String? selectedDia;
+  String? selectedHoraInicio;
+  String? selectedHoraFim;
+
+  final List<String> diasDaSemana = [
+    'Segunda',
+    'Terça',
+    'Quarta',
+    'Quinta',
+    'Sexta',
+    'Sábado',
+  ];
+
+  final List<String> horarios = [
+    '07:10',
+    '08:00',
+    '08:50',
+    '09:40',
+    '10:30',
+    '11:20',
+    '12:10',
+    '13:00',
+    '13:50',
+    '14:40',
+    '15:30',
+    '16:20',
+    '17:10',
+    '18:00',
+    '18:50',
+    '19:40',
+    '20:30',
+    '21:20',
+    '22:10',
+  ];
 
   void adicionarTurma() {
     setState(() {
@@ -24,17 +55,17 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
           nome: nomeController.text,
           codigo: codigoController.text,
           horario: Horario(
-            dia: diaController.text,
-            horaInicio: horaInicioController.text,
-            horaFim: horaFimController.text,
+            dia: selectedDia!,
+            horaInicio: selectedHoraInicio!,
+            horaFim: selectedHoraFim!,
           ),
         ),
       );
       nomeController.clear();
       codigoController.clear();
-      diaController.clear();
-      horaInicioController.clear();
-      horaFimController.clear();
+      selectedDia = null;
+      selectedHoraInicio = null;
+      selectedHoraFim = null;
     });
   }
 
@@ -55,25 +86,68 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
                 controller: codigoController,
                 decoration: InputDecoration(labelText: 'Código da Turma'),
               ),
-              TextField(
-                controller: diaController,
-                decoration: InputDecoration(labelText: 'Dia da Aula'),
+              DropdownButtonFormField<String>(
+                value: selectedDia,
+                hint: Text('Escolha o Dia da Semana'),
+                items: diasDaSemana.map((String dia) {
+                  return DropdownMenuItem<String>(
+                    value: dia,
+                    child: Text(dia),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedDia = newValue;
+                  });
+                },
               ),
-              TextField(
-                controller: horaInicioController,
-                decoration: InputDecoration(labelText: 'Hora de Início'),
+              DropdownButtonFormField<String>(
+                value: selectedHoraInicio,
+                hint: Text('Escolha o Horário de Início'),
+                items: horarios.map((String hora) {
+                  return DropdownMenuItem<String>(
+                    value: hora,
+                    child: Text(hora),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedHoraInicio = newValue;
+                  });
+                },
               ),
-              TextField(
-                controller: horaFimController,
-                decoration: InputDecoration(labelText: 'Hora de Fim'),
+              DropdownButtonFormField<String>(
+                value: selectedHoraFim,
+                hint: Text('Escolha o Horário de Fim'),
+                items: horarios.map((String hora) {
+                  return DropdownMenuItem<String>(
+                    value: hora,
+                    child: Text(hora),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedHoraFim = newValue;
+                  });
+                },
               ),
             ],
           ),
           actions: [
             ElevatedButton(
               onPressed: () {
-                adicionarTurma();
-                Navigator.of(context).pop();
+                if (selectedDia != null &&
+                    selectedHoraInicio != null &&
+                    selectedHoraFim != null) {
+                  adicionarTurma();
+                  Navigator.of(context).pop();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Preencha todos os campos!'),
+                    ),
+                  );
+                }
               },
               child: Text('Adicionar Turma'),
             ),
@@ -97,30 +171,43 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
         backgroundColor: ColorsTheme().lightColorsScheme().primary,
       ),
       backgroundColor: Colors.white,
-      body: ListView.builder(
+      body: ListView.separated(
         itemCount: turmas.length,
+        separatorBuilder: (context, index) => SizedBox(height: 10.0),
         itemBuilder: (context, index) {
           final turma = turmas[index];
-          return Container(
-            color: Colors.blue,
-            padding: EdgeInsets.all(16.0),
-            margin: EdgeInsets.symmetric(vertical: 10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Nome: ${turma.nome}',
-                  style: TextStyle(color: Colors.white),
-                ),
-                Text(
-                  'Código: ${turma.codigo}',
-                  style: TextStyle(color: Colors.white),
-                ),
-                Text(
-                  'Horário: ${turma.horario.dia} ${turma.horario.horaInicio} - ${turma.horario.horaFim}',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ],
+          return Card(
+            color: ColorsTheme().lightColorsScheme().primary,
+            elevation: 4.0,
+            child: Container(
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Nome: ${turma.nome}',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17,
+                    ),
+                  ),
+                  Text(
+                    'Código: ${turma.codigo}',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    'Horário: ${turma.horario.dia} ${turma.horario.horaInicio} - ${turma.horario.horaFim}',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         },

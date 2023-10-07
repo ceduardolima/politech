@@ -38,6 +38,57 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
     });
   }
 
+  void _mostrarDialogAdicionarTurma(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Adicionar Turma'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nomeController,
+                decoration: InputDecoration(labelText: 'Nome da Turma'),
+              ),
+              TextField(
+                controller: codigoController,
+                decoration: InputDecoration(labelText: 'Código da Turma'),
+              ),
+              TextField(
+                controller: diaController,
+                decoration: InputDecoration(labelText: 'Dia da Aula'),
+              ),
+              TextField(
+                controller: horaInicioController,
+                decoration: InputDecoration(labelText: 'Hora de Início'),
+              ),
+              TextField(
+                controller: horaFimController,
+                decoration: InputDecoration(labelText: 'Hora de Fim'),
+              ),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                adicionarTurma();
+                Navigator.of(context).pop();
+              },
+              child: Text('Adicionar Turma'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancelar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,58 +97,40 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
         backgroundColor: ColorsTheme().lightColorsScheme().primary,
       ),
       backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: turmas.length,
-              itemBuilder: (context, index) {
-                final turma = turmas[index];
-                return ListTile(
-                  title: Text('Nome: ${turma.nome}'),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Código: ${turma.codigo}'),
-                      Text('Horário: ${turma.horario.dia} ${turma.horario.horaInicio} - ${turma.horario.horaFim}'),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
+      body: ListView.builder(
+        itemCount: turmas.length,
+        itemBuilder: (context, index) {
+          final turma = turmas[index];
+          return Container(
+            color: Colors.blue,
+            padding: EdgeInsets.all(16.0),
+            margin: EdgeInsets.symmetric(vertical: 10.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextField(
-                  controller: nomeController,
-                  decoration: InputDecoration(labelText: 'Nome da Turma'),
+                Text(
+                  'Nome: ${turma.nome}',
+                  style: TextStyle(color: Colors.white),
                 ),
-                TextField(
-                  controller: codigoController,
-                  decoration: InputDecoration(labelText: 'Código da Turma'),
+                Text(
+                  'Código: ${turma.codigo}',
+                  style: TextStyle(color: Colors.white),
                 ),
-                TextField(
-                  controller: diaController,
-                  decoration: InputDecoration(labelText: 'Dia da Aula'),
-                ),
-                TextField(
-                  controller: horaInicioController,
-                  decoration: InputDecoration(labelText: 'Hora de Início'),
-                ),
-                TextField(
-                  controller: horaFimController,
-                  decoration: InputDecoration(labelText: 'Hora de Fim'),
-                ),
-                ElevatedButton(
-                  onPressed: adicionarTurma,
-                  child: Text('Adicionar Turma'),
+                Text(
+                  'Horário: ${turma.horario.dia} ${turma.horario.horaInicio} - ${turma.horario.horaFim}',
+                  style: TextStyle(color: Colors.white),
                 ),
               ],
             ),
-          ),
-        ],
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _mostrarDialogAdicionarTurma(context);
+        },
+        child: Icon(Icons.add),
+        backgroundColor: ColorsTheme().lightColorsScheme().primary,
       ),
     );
   }

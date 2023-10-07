@@ -171,46 +171,49 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
         backgroundColor: ColorsTheme().lightColorsScheme().primary,
       ),
       backgroundColor: Colors.white,
-      body: ListView.separated(
-        itemCount: turmas.length,
-        separatorBuilder: (context, index) => SizedBox(height: 10.0),
-        itemBuilder: (context, index) {
-          final turma = turmas[index];
-          return Card(
-            color: ColorsTheme().lightColorsScheme().primary,
-            elevation: 4.0,
-            child: Container(
-              padding: EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Nome: ${turma.nome}',
-                    style: TextStyle(
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: ListView.separated(
+          itemCount: turmas.length,
+          separatorBuilder: (context, index) => SizedBox(height: 10.0),
+          itemBuilder: (context, index) {
+            final turma = turmas[index];
+            return Card(
+              color: ColorsTheme().lightColorsScheme().primary,
+              elevation: 4.0,
+              child: Container(
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Nome: ${turma.nome}',
+                      style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 17,
+                      ),
                     ),
-                  ),
-                  Text(
-                    'Código: ${turma.codigo}',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
+                    Text(
+                      'Código: ${turma.codigo}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
                     ),
-                  ),
-                  Text(
-                    'Horário: ${turma.horario.dia} ${turma.horario.horaInicio} - ${turma.horario.horaFim}',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
+                    Text(
+                      'Horário: ${turma.horario.dia} ${turma.horario.horaInicio} - ${turma.horario.horaFim}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

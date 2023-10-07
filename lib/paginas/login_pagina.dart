@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:politech/paginas/cadastro_pagina.dart';
 import 'package:politech/theme/colors_theme.dart';
 import 'package:politech/widgets/container/login_container.dart';
+import 'package:politech/paginas/cadastro_turma_pagina.dart';
 
 class TelaLogin extends StatelessWidget {
   const TelaLogin({Key? key});
@@ -43,22 +44,12 @@ class TelaLogin extends StatelessWidget {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(fixedSize: Size.fromHeight(40)),
                 onPressed: () {
-                  // Mostrar o texto "Testar banco" ao pressionar o botão
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Testar banco'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('Fechar'),
-                          ),
-                        ],
-                      );
-                    },
+                  // Navegar para a TelaCadastro quando o botão "Cadastrar" for pressionado
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TelaCadastroTurma(),
+                    ),
                   );
                 },
                 child: const Text('Login', style: TextStyle(fontSize: 16),),

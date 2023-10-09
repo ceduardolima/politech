@@ -36,4 +36,9 @@ class TurmaViewModel extends ChangeNotifier {
   TurmaRepositorio get turma => _turmaRepositorio;
 
   List<Aluno> get alunos => _alunos;
+
+  excluir(Turma turma) async {
+    await _turmaRepositorio.excluir(turma);
+    notifyListeners();
+  }
 }

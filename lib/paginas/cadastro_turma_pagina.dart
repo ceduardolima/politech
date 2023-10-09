@@ -49,24 +49,36 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
   ];
 
   void adicionarTurma() {
-    setState(() {
-      turmas.add(
-        Turma(
-          nome: nomeController.text,
-          codigo: codigoController.text,
-          horario: Horario(
-            dia: selectedDia!,
-            horaInicio: selectedHoraInicio!,
-            horaFim: selectedHoraFim!,
+    if (nomeController.text.isNotEmpty &&
+        codigoController.text.isNotEmpty &&
+        selectedDia != null &&
+        selectedHoraInicio != null &&
+        selectedHoraFim != null) {
+      setState(() {
+        turmas.add(
+          Turma(
+            nome: nomeController.text,
+            codigo: codigoController.text,
+            horario: Horario(
+              dia: selectedDia!,
+              horaInicio: selectedHoraInicio!,
+              horaFim: selectedHoraFim!,
+            ),
           ),
+        );
+        nomeController.clear();
+        codigoController.clear();
+        selectedDia = null;
+        selectedHoraInicio = null;
+        selectedHoraFim = null;
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Preencha todos os campos!'),
         ),
       );
-      nomeController.clear();
-      codigoController.clear();
-      selectedDia = null;
-      selectedHoraInicio = null;
-      selectedHoraFim = null;
-    });
+    }
   }
 
   void _mostrarDialogAdicionarTurma(BuildContext context) {

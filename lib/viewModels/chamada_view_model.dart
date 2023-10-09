@@ -34,6 +34,10 @@ class ChamadaViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> excluirChamadaDaTurma(String turmaId) async {
+    await _chamadaRepositorio.excluirChamadasDaTurma(turmaId);
+  }
+
   List<Chamada> get listaChamadas => _chamadas;
 
   ChamadaRepositorio get chamada => _chamadaRepositorio;

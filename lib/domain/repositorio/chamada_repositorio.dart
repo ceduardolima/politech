@@ -30,6 +30,10 @@ class ChamadaRepositorio {
     await _chamadaDao.atualizar(chamada);
   }
 
+  Future<void> excluirChamadasDaTurma(String turmaId) async {
+    await _chamadaDao.excluirChamadasDaTurma(turmaId);
+  }
+
   Future<void> excluir(Chamada chamada) async {
     await _chamadaDao.excluir(chamada);
   }

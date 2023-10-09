@@ -679,6 +679,16 @@ class _$ChamadaDao extends ChamadaDao {
   }
 
   @override
+  Future<List<Chamada>> excluirChamadasDaTurma(String turmaId) async {
+    return _queryAdapter.queryList('DELETE FROM chamadas WHERE turma_id = ?1',
+        mapper: (Map<String, Object?> row) => Chamada(
+            row['id'] as String,
+            _dateTimeConversor.decode(row['data'] as int),
+            row['turma_id'] as String),
+        arguments: [turmaId]);
+  }
+
+  @override
   Future<void> inserir(Chamada chamada) async {
     await _chamadaInsertionAdapter.insert(chamada, OnConflictStrategy.fail);
   }

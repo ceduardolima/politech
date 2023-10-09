@@ -16,6 +16,8 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
   String? selectedDia;
   String? selectedHoraInicio;
   String? selectedHoraFim;
+  int? _turmaIndexParaEditar;
+  int? _turmaIndexParaExcluir;
 
   final List<String> diasDaSemana = [
     'Segunda',
@@ -175,6 +177,32 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
     );
   }
 
+  void _editarTurma() {
+    if (_turmaIndexParaEditar != null) {
+      // Implemente a lógica de edição da turma aqui
+      // Por exemplo:
+      // Navigator.of(context).push(
+      //   MaterialPageRoute(
+      //     builder: (context) => TelaEdicaoTurma(
+      //       turma: turmas[_turmaIndexParaEditar!],
+      //     ),
+      //   ),
+      // );
+      // Limpe a variável após a edição
+      _turmaIndexParaEditar = null;
+    }
+  }
+
+  void _excluirTurma() {
+    if (_turmaIndexParaExcluir != null) {
+      setState(() {
+        turmas.removeAt(_turmaIndexParaExcluir!);
+      });
+      // Limpe a variável após a exclusão
+      _turmaIndexParaExcluir = null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -194,31 +222,56 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
               color: ColorsTheme().lightColorsScheme().primary,
               elevation: 4.0,
               child: Container(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                padding: EdgeInsets.all(10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Text(
-                      'Nome: ${turma.nome}',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 17,
-                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Nome: ${turma.nome}',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 17,
+                          ),
+                        ),
+                        Text(
+                          'Código: ${turma.codigo}',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          'Horário: ${turma.horario.dia} ${turma.horario.horaInicio} - ${turma.horario.horaFim}',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      'Código: ${turma.codigo}',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                    ),
-                    Text(
-                      'Horário: ${turma.horario.dia} ${turma.horario.horaInicio} - ${turma.horario.horaFim}',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            _turmaIndexParaEditar = index;
+                            _editarTurma();
+                          },
+                          child: Text('Editar'),
+                        ),
+                        SizedBox(width: 10),
+                        ElevatedButton(
+                          onPressed: () {
+                            _turmaIndexParaExcluir = index;
+                            _excluirTurma();
+                          },
+                          child: Text('Excluir'),
+                        ),
+                      ],
                     ),
                   ],
                 ),

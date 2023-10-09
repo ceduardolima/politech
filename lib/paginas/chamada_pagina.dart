@@ -156,7 +156,9 @@ class ChamadaPagina extends StatelessWidget {
                       );
                     }
                   },
-                  onDelete: () {},
+                  onDelete: () async {
+                    await chamadaViewModel.excluir(chamada);
+                  },
                 );
               }),
         ),

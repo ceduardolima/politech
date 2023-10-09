@@ -179,17 +179,122 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
 
   void _editarTurma() {
     if (_turmaIndexParaEditar != null) {
-      // Implemente a lógica de edição da turma aqui
-      // Por exemplo:
-      // Navigator.of(context).push(
-      //   MaterialPageRoute(
-      //     builder: (context) => TelaEdicaoTurma(
-      //       turma: turmas[_turmaIndexParaEditar!],
-      //     ),
-      //   ),
-      // );
-      // Limpe a variável após a edição
-      _turmaIndexParaEditar = null;
+      // Recupere a turma que será editada
+      Turma turmaParaEditar = turmas[_turmaIndexParaEditar!];
+
+      // Configure os controladores com os valores da turma
+      nomeController.text = turmaParaEditar.nome;
+      codigoController.text = turmaParaEditar.codigo;
+      selectedDia = turmaParaEditar.horario.dia;
+      selectedHoraInicio = turmaParaEditar.horario.horaInicio;
+      selectedHoraFim = turmaParaEditar.horario.horaFim;
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Editar Turma'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: nomeController,
+                  decoration: InputDecoration(labelText: 'Nome da Turma'),
+                ),
+                TextField(
+                  controller: codigoController,
+                  decoration: InputDecoration(labelText: 'Código da Turma'),
+                ),
+                DropdownButtonFormField<String>(
+                  value: selectedDia,
+                  hint: Text('Escolha o Dia da Semana'),
+                  items: diasDaSemana.map((String dia) {
+                    return DropdownMenuItem<String>(
+                      value: dia,
+                      child: Text(dia),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedDia = newValue;
+                    });
+                  },
+                ),
+                DropdownButtonFormField<String>(
+                  value: selectedHoraInicio,
+                  hint: Text('Escolha o Horário de Início'),
+                  items: horarios.map((String hora) {
+                    return DropdownMenuItem<String>(
+                      value: hora,
+                      child: Text(hora),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedHoraInicio = newValue;
+                    });
+                  },
+                ),
+                DropdownButtonFormField<String>(
+                  value: selectedHoraFim,
+                  hint: Text('Escolha o Horário de Fim'),
+                  items: horarios.map((String hora) {
+                    return DropdownMenuItem<String>(
+                      value: hora,
+                      child: Text(hora),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedHoraFim = newValue;
+                    });
+                  },
+                ),
+              ],
+            ),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  if (selectedDia != null &&
+                      selectedHoraInicio != null &&
+                      selectedHoraFim != null) {
+                    // Atualize a turma existente com as informações editadas
+                    setState(() {
+                      turmaParaEditar.atualizarNome(nomeController.text);
+                      turmaParaEditar.atualizarCodigo(codigoController.text);
+                      turmaParaEditar.atualizarHorario(Horario(
+                        dia: selectedDia!,
+                        horaInicio: selectedHoraInicio!,
+                        horaFim: selectedHoraFim!,
+                      ));
+                    });
+                    nomeController.clear();
+                    codigoController.clear();
+                    selectedDia = null;
+                    selectedHoraInicio = null;
+                    selectedHoraFim = null;
+                    // Feche o diálogo de edição
+                    Navigator.of(context).pop();
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Preencha todos os campos!'),
+                      ),
+                    );
+                  }
+                },
+                child: Text('Salvar'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Cancelar'),
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 
@@ -224,7 +329,7 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
               child: Container(
                 padding: EdgeInsets.all(10.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -261,6 +366,9 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
                             _turmaIndexParaEditar = index;
                             _editarTurma();
                           },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.lightGreen, // Cor verde para o botão de Editar
+                          ),
                           child: Text('Editar'),
                         ),
                         SizedBox(width: 10),
@@ -269,6 +377,9 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
                             _turmaIndexParaExcluir = index;
                             _excluirTurma();
                           },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.redAccent, // Cor verde para o botão de Editar
+                          ),
                           child: Text('Excluir'),
                         ),
                       ],
@@ -292,15 +403,29 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
 }
 
 class Turma {
-  final String nome;
-  final String codigo;
-  final Horario horario;
+  String nome;
+  String codigo;
+  Horario horario;
 
   Turma({
     required this.nome,
     required this.codigo,
     required this.horario,
   });
+  // Método para atualizar o nome da turma
+  void atualizarNome(String novoNome) {
+    nome = novoNome;
+  }
+
+  // Método para atualizar o código da turma
+  void atualizarCodigo(String novoCodigo) {
+    codigo = novoCodigo;
+  }
+
+  // Método para atualizar o horário da turma
+  void atualizarHorario(Horario novoHorario) {
+    horario = novoHorario;
+  }
 }
 
 class Horario {

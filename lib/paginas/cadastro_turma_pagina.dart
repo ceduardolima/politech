@@ -2,9 +2,11 @@ import 'package:politech/paginas/chamada_pagina.dart';
 import 'package:politech/paginas/login_pagina.dart';
 import 'package:politech/theme/colors_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:politech/viewModels/chamada_view_model.dart';
 import 'package:politech/viewModels/turma_view_model.dart';
 import 'package:politech/widgets/botoes/criar_floating_action_button.dart';
 import 'package:politech/widgets/dialogs/dialog_adicionar_turma.dart';
+import 'package:politech/widgets/dialogs/dialog_cuidado_excluir.dart';
 import 'package:politech/widgets/itens_lista/turma_item_lista.dart';
 import 'package:provider/provider.dart';
 
@@ -19,14 +21,12 @@ class TelaCadastroTurma extends StatefulWidget {
 
 class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
   late TurmaViewModel turmaViewModel;
-  TextEditingController nomeController = TextEditingController();
-  TextEditingController codigoController = TextEditingController();
-
+  late ChamadaViewModel chamadaViewModel;
 
   void excluirTurma(Turma turma) {
     turmaViewModel.excluir(turma);
   }
-  
+
   void inserirTurma(Turma turma) {
     turmaViewModel.inserir(turma);
   }
@@ -43,12 +43,18 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
   @override
   Widget build(BuildContext context) {
     turmaViewModel = context.watch<TurmaViewModel>();
+    chamadaViewModel = context.watch<ChamadaViewModel>();
+    turmaViewModel.assistirListaDeTurmas();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Cadastro de Turma'),
         backgroundColor: ColorsTheme().lightColorsScheme().primary,
       ),
       backgroundColor: Colors.white,
+      floatingActionButton: CriarFloatActionButton(
+        onPressed: () => _mostrarDialogAdicionarTurma(context),
+        label: 'Turma',
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView.separated(
@@ -58,7 +64,17 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
             final turma = turmaViewModel.listaDeTurmas[index];
             return TurmaItemLista(
               turma: turma,
-              excluirTurma: () => excluirTurma(turma),
+              excluirTurma: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => DialogCuidadoExcluir(
+                    excluir: () {
+                      chamadaViewModel.excluirChamadaDaTurma(turma.id);
+                      turmaViewModel.excluir(turma);
+                    },
+                  ),
+                );
+              },
               onPressed: () {
                 Navigator.push(
                   context,
@@ -72,12 +88,6 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
             );
           },
         ),
-      ),
-      floatingActionButton: CriarFloatActionButton(
-        onPressed: () {
-          _mostrarDialogAdicionarTurma(context);
-        },
-        label: 'Turma',
       ),
     );
   }

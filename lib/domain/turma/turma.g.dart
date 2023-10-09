@@ -9,9 +9,11 @@ part of 'turma.dart';
 Turma _$TurmaFromJson(Map<String, dynamic> json) => Turma(
       json['id'] as String,
       json['nome'] as String,
+      json['codigo'] as String,
     );
 
 Map<String, dynamic> _$TurmaToJson(Turma instance) => <String, dynamic>{
       'id': instance.id,
+      'codigo': instance.codigo,
       'nome': instance.nome,
     };

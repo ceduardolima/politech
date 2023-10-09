@@ -11,11 +11,12 @@ part 'turma.g.dart';
 @JsonSerializable()
 class Turma {
   late final String id;
+  final String codigo;
   final String nome;
 
-  Turma(this.id, this.nome);
+  Turma(this.id, this.nome, this.codigo);
 
-  Turma.genId(this.nome) {
+  Turma.genId(this.nome, this.codigo) {
     id = const Uuid().v4().toString();
   }
   /// Transforma o Map na classe turma

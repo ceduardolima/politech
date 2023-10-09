@@ -99,7 +99,7 @@ class _$PolitechDb extends PolitechDb {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `presencas` (`id` TEXT NOT NULL, `aluno_id` TEXT NOT NULL, `chamada_id` TEXT NOT NULL, `presente` INTEGER NOT NULL, `data` INTEGER NOT NULL, FOREIGN KEY (`aluno_id`) REFERENCES `alunos` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`chamada_id`) REFERENCES `chamadas` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `turmas` (`id` TEXT NOT NULL, `nome` TEXT NOT NULL, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `turmas` (`id` TEXT NOT NULL, `codigo` TEXT NOT NULL, `nome` TEXT NOT NULL, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `chamadas` (`id` TEXT NOT NULL, `data` INTEGER NOT NULL, `turma_id` TEXT NOT NULL, FOREIGN KEY (`turma_id`) REFERENCES `turmas` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
         await database.execute(
@@ -547,13 +547,21 @@ class _$TurmaDao extends TurmaDao {
         _turmaInsertionAdapter = InsertionAdapter(
             database,
             'turmas',
-            (Turma item) => <String, Object?>{'id': item.id, 'nome': item.nome},
+            (Turma item) => <String, Object?>{
+                  'id': item.id,
+                  'codigo': item.codigo,
+                  'nome': item.nome
+                },
             changeListener),
         _turmaDeletionAdapter = DeletionAdapter(
             database,
             'turmas',
             ['id'],
-            (Turma item) => <String, Object?>{'id': item.id, 'nome': item.nome},
+            (Turma item) => <String, Object?>{
+                  'id': item.id,
+                  'codigo': item.codigo,
+                  'nome': item.nome
+                },
             changeListener);
 
   final sqflite.DatabaseExecutor database;
@@ -569,8 +577,8 @@ class _$TurmaDao extends TurmaDao {
   @override
   Stream<List<Turma>> assistirListaDeTurmas() {
     return _queryAdapter.queryListStream('SELECT * FROM turmas',
-        mapper: (Map<String, Object?> row) =>
-            Turma(row['id'] as String, row['nome'] as String),
+        mapper: (Map<String, Object?> row) => Turma(row['id'] as String,
+            row['nome'] as String, row['codigo'] as String),
         queryableName: 'turmas',
         isView: false);
   }

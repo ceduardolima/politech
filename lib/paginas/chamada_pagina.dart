@@ -37,6 +37,9 @@ class ChamadaPagina extends StatelessWidget {
         chamada.id, hoje, chamadaJson);
   }
 
+  String _limitandoTexto(String texto) =>
+    texto.length > 20 ? "${texto.substring(0, 25)}..." : texto;
+
   /// Transforma a lista de alunos em uma FormBuilderFieldOption Para ser usada
   /// no FormBuilderFieldOption
   List<FormBuilderFieldOption<String>> listaAlunoParaListaOption(
@@ -48,9 +51,9 @@ class ChamadaPagina extends StatelessWidget {
                   children: [
                     const Spacer(),
                     Text(
-                      aluno.nome,
-                      style: const TextStyle(fontSize: 16),
-                      maxLines: 1,
+                      _limitandoTexto(aluno.nome),
+                      style: const TextStyle(fontSize: 16, ),
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
@@ -119,7 +122,6 @@ class ChamadaPagina extends StatelessWidget {
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         primary: true,
-        toolbarHeight: 80.0,
         title: Text(
           title,
           style: const TextStyle(fontSize: 24.0),
@@ -142,7 +144,6 @@ class ChamadaPagina extends StatelessWidget {
                     final chamadaData = chamada.data;
                     final alunos = await presencaViewModel
                         .listarAlunosDaChamada(chamada.id, true);
-                    debugPrint(alunos.toString());
                     if (context.mounted) {
                       showDialog(
                         context: context,
@@ -157,6 +158,7 @@ class ChamadaPagina extends StatelessWidget {
                     }
                   },
                   onDelete: () async {
+                    await presencaViewModel.excluirPresencaDaChamada(chamada.id);
                     await chamadaViewModel.excluir(chamada);
                   },
                 );

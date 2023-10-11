@@ -19,7 +19,7 @@ void main() {
           .build();
       turmaDao = banco.turmaDao;
       chamadaDao = banco.chamadaDao;
-      turma = Turma.genId("Turma 01");
+      turma = Turma.genId("Turma 01", "MF");
       await turmaDao.inserir(turma);
     });
 

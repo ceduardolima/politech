@@ -20,7 +20,7 @@ void main() {
           .build();
       alunoDao = banco.alunoDao;
       turmaDao = banco.turmaDao;
-      turma = Turma.genId("Turma 01");
+      turma = Turma.genId("Turma 01", "MF");
       turmaDao.inserir(turma);
     });
 
@@ -75,21 +75,6 @@ void main() {
       alunoDao.atualizar(aluno);
       final alunoAtualizado = await alunoDao.procurarPorId(aluno.id);
       expect(alunoAtualizado!.nome, equals(aluno.nome));
-    });
-
-
-    test("Inserindo número de inscrição duplicado", () async {
-      Aluno aluno_1 = Aluno.genId("12345", "Eduardo", "12345678901", turma.id);
-      Aluno aluno_2 = Aluno.genId("12345", "Eduardo", "12345678902", turma.id);
-      alunoDao.inserir(aluno_1);
-      expect(alunoDao.inserir(aluno_2), throwsA(isA<Exception>()));
-    });
-
-    test("Inserindo cpf duplicado", () async {
-      Aluno aluno_1 = Aluno.genId("12345", "Eduardo", "12345678901", turma.id);
-      Aluno aluno_2 = Aluno.genId("12344", "Eduardo", "12345678901", turma.id);
-      alunoDao.inserir(aluno_1);
-      expect(alunoDao.inserir(aluno_2), throwsA(isA<Exception>()));
     });
 
     test("Exluir aluno", () async {

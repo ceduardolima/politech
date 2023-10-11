@@ -16,7 +16,7 @@ void main() {
     late AlunoDao alunoDao;
     late TurmaDao turmaDao;
     late ChamadaDao chamadaDao;
-    Turma turma = Turma.genId("Turma 01");
+    Turma turma = Turma.genId("Turma 01", "MF");
     Chamada chamada = Chamada.genId(DateTime.now(), turma.id);
 
     setUp(() async {

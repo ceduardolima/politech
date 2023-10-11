@@ -1,7 +1,8 @@
 import 'package:politech/paginas/chamada_pagina.dart';
-import 'package:politech/paginas/login_pagina.dart';
+import 'package:politech/paginas/cria_turma_pagina.dart';
 import 'package:politech/theme/colors_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:politech/viewModels/aluno_view_model.dart';
 import 'package:politech/viewModels/chamada_view_model.dart';
 import 'package:politech/viewModels/turma_view_model.dart';
 import 'package:politech/widgets/botoes/criar_floating_action_button.dart';
@@ -11,6 +12,7 @@ import 'package:politech/widgets/itens_lista/turma_item_lista.dart';
 import 'package:provider/provider.dart';
 
 import '../domain/turma/turma.dart';
+import '../viewModels/presenca_view_model.dart';
 
 class TelaCadastroTurma extends StatefulWidget {
   TelaCadastroTurma({Key? key}) : super(key: key);
@@ -22,6 +24,8 @@ class TelaCadastroTurma extends StatefulWidget {
 class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
   late TurmaViewModel turmaViewModel;
   late ChamadaViewModel chamadaViewModel;
+  late PresencaViewModel presencaViewModel;
+  late AlunoViewModel alunoViewModel;
 
   void excluirTurma(Turma turma) {
     turmaViewModel.excluir(turma);
@@ -44,6 +48,8 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
   Widget build(BuildContext context) {
     turmaViewModel = context.watch<TurmaViewModel>();
     chamadaViewModel = context.watch<ChamadaViewModel>();
+    presencaViewModel = context.watch<PresencaViewModel>();
+    alunoViewModel = context.watch<AlunoViewModel>();
     turmaViewModel.assistirListaDeTurmas();
     return Scaffold(
       appBar: AppBar(
@@ -52,7 +58,12 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
       ),
       backgroundColor: Colors.white,
       floatingActionButton: CriarFloatActionButton(
-        onPressed: () => _mostrarDialogAdicionarTurma(context),
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CriaTurmaPaginaPagina(),
+          ),
+        ),
         label: 'Turma',
       ),
       body: Padding(
@@ -68,9 +79,11 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
                 showDialog(
                   context: context,
                   builder: (context) => DialogCuidadoExcluir(
-                    excluir: () {
-                      chamadaViewModel.excluirChamadaDaTurma(turma.id);
-                      turmaViewModel.excluir(turma);
+                    excluir: () async {
+                      await presencaViewModel.excluirPresencaDaturma(turma.id);
+                      await chamadaViewModel.excluirChamadaDaTurma(turma.id);
+                      await alunoViewModel.excluirAlunosDaTurma(turma.id);
+                      await turmaViewModel.excluir(turma);
                     },
                   ),
                 );

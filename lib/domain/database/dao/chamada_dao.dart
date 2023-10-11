@@ -19,7 +19,7 @@ abstract class ChamadaDao {
   Future<void> atualizar(Chamada chamada);
 
   @Query("DELETE FROM chamadas WHERE turma_id = :turmaId")
-  Future<List<Chamada>> excluirChamadasDaTurma(String turmaId);
+  Future<void> excluirChamadasDaTurma(String turmaId);
 
   @delete
   Future<void> excluir(Chamada chamada);

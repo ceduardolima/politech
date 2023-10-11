@@ -29,6 +29,9 @@ abstract class AlunoDao {
 
   @Query("SELECT * From alunos WHERE num_inscricao=:inscricao")
   Future<Aluno?> procurarPorInscricao(String inscricao);
+  
+  @Query("DELETE FROM alunos WHERE turma_id = :turmaId")
+  Future<int?> excluirAlunosDaTurma(String turmaId);
 
   @delete
   Future<void> excluir(Aluno aluno);

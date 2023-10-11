@@ -103,9 +103,9 @@ class _$PolitechDb extends PolitechDb {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `chamadas` (`id` TEXT NOT NULL, `data` INTEGER NOT NULL, `turma_id` TEXT NOT NULL, FOREIGN KEY (`turma_id`) REFERENCES `turmas` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE UNIQUE INDEX `index_alunos_num_inscricao` ON `alunos` (`num_inscricao`)');
-        await database.execute(
-            'CREATE UNIQUE INDEX `index_alunos_cpf` ON `alunos` (`cpf`)');
+            'CREATE INDEX `index_alunos_num_inscricao` ON `alunos` (`num_inscricao`)');
+        await database
+            .execute('CREATE INDEX `index_alunos_cpf` ON `alunos` (`cpf`)');
         await database.execute(
             'CREATE INDEX `index_presencas_aluno_id` ON `presencas` (`aluno_id`)');
 
@@ -390,6 +390,13 @@ class _$AlunoDao extends AlunoDao {
   }
 
   @override
+  Future<int?> excluirAlunosDaTurma(String turmaId) async {
+    return _queryAdapter.query('DELETE FROM alunos WHERE turma_id = ?1',
+        mapper: (Map<String, Object?> row) => row.values.first as int,
+        arguments: [turmaId]);
+  }
+
+  @override
   Future<void> inserir(Aluno aluno) async {
     await _alunoInsertionAdapter.insert(aluno, OnConflictStrategy.abort);
   }
@@ -520,6 +527,20 @@ class _$PresencaDao extends PresencaDao {
         'SELECT alunos.* FROM alunos LEFT JOIN presencas ON alunos.id = presencas.aluno_id WHERE presencas.chamada_id = ?1 AND presencas.presente = ?2',
         mapper: (Map<String, Object?> row) => Aluno(row['id'] as String, row['num_inscricao'] as String, row['nome'] as String, row['cpf'] as String, row['turma_id'] as String),
         arguments: [chamadaId, presenca ? 1 : 0]);
+  }
+
+  @override
+  Future<void> excluirPresencaDaChamada(String chamadaId) async {
+    await _queryAdapter.queryNoReturn(
+        'DELETE FROM presencas WHERE chamada_id = ?1',
+        arguments: [chamadaId]);
+  }
+
+  @override
+  Future<void> excluirPresencaDaTurma(String turmaId) async {
+    await _queryAdapter.queryNoReturn(
+        'DELETE FROM presencas WHERE chamada_id IN (SELECT id FROM chamadas WHERE chamadas.turma_id = ?1)',
+        arguments: [turmaId]);
   }
 
   @override
@@ -679,12 +700,9 @@ class _$ChamadaDao extends ChamadaDao {
   }
 
   @override
-  Future<List<Chamada>> excluirChamadasDaTurma(String turmaId) async {
-    return _queryAdapter.queryList('DELETE FROM chamadas WHERE turma_id = ?1',
-        mapper: (Map<String, Object?> row) => Chamada(
-            row['id'] as String,
-            _dateTimeConversor.decode(row['data'] as int),
-            row['turma_id'] as String),
+  Future<void> excluirChamadasDaTurma(String turmaId) async {
+    await _queryAdapter.queryNoReturn(
+        'DELETE FROM chamadas WHERE turma_id = ?1',
         arguments: [turmaId]);
   }
 

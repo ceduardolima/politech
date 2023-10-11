@@ -28,6 +28,13 @@ abstract class PresencaDao {
       "WHERE presencas.chamada_id = :chamadaId AND presencas.presente = :presenca")
   Future<List<Aluno>> listarAlunosDaChamada(String chamadaId, bool presenca);
 
+  @Query("DELETE FROM presencas WHERE chamada_id = :chamadaId")
+  Future<void> excluirPresencaDaChamada(String chamadaId);
+
+  @Query("DELETE FROM presencas WHERE chamada_id "
+      "IN (SELECT id FROM chamadas WHERE chamadas.turma_id = :turmaId)")
+  Future<void> excluirPresencaDaTurma(String turmaId);
+
   @delete
   Future<void> excluir(Presenca presenca);
 }

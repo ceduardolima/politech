@@ -38,6 +38,14 @@ class PresencaRepositorio {
     return await _presencaDao.listarAlunosDaChamada(chamadaId, presente);
   }
 
+  Future<void> excluirPresencaDaTurma(String turmaId) async {
+    await _presencaDao.excluirPresencaDaTurma(turmaId);
+  }
+
+  Future<void> excluirPresencaDaChamada(String chamadaId) async {
+    await _presencaDao.excluirPresencaDaChamada(chamadaId);
+  }
+
   Future<void> excluir(Presenca presenca) async {
     await _presencaDao.excluir(presenca);
   }

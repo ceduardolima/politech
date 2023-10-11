@@ -24,4 +24,12 @@ class AlunoViewModel extends ChangeNotifier {
   List<Aluno> get listaAluno => _alunos;
 
   AlunoRepositorio get aluno => _alunoRepositorio;
+
+  Future<void> inserirLista(List<Aluno> alunos) async {
+    await _alunoRepositorio.inserirLista(alunos);
+  }
+  
+  Future<bool> excluirAlunosDaTurma(String turmaId) async {
+    return await _alunoRepositorio.excluirAlunosDaTurma(turmaId);
+  }
 }

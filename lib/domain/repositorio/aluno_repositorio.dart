@@ -46,6 +46,11 @@ class AlunoRepositorio {
     return await _alunoDao.procurarPorInscricao(inscricao);
   }
 
+  Future<bool> excluirAlunosDaTurma(String turmaId) async {
+    int? value = await _alunoDao.excluirAlunosDaTurma(turmaId);
+    return value != null ? (value == 1) : false;
+  }
+
   Future<void> excluir(Aluno aluno) async {
     await _alunoDao.excluir(aluno);
   }

@@ -11,8 +11,8 @@ part 'aluno.g.dart';
   ForeignKey(childColumns: ["turma_id"], parentColumns: ["id"], entity: Turma)
 ],
     indices: [
-  Index(value: ["num_inscricao"], unique: true),
-  Index(value: ["cpf"], unique: true)
+  Index(value: ["num_inscricao"]),
+  Index(value: ["cpf"])
 ])
 @JsonSerializable()
 class Aluno {

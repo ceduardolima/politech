@@ -7,15 +7,13 @@ import 'package:provider/provider.dart';
 
 import '../widgets/botoes/menu_principal_botoes.dart';
 
-class MenuPrincipalPagina extends StatefulWidget {
+class MenuPrincipalPagina extends StatelessWidget {
   const MenuPrincipalPagina({super.key});
 
-  @override
-  State<MenuPrincipalPagina> createState() => _EstadoMenuPrincipal();
-}
-
-class _EstadoMenuPrincipal extends State<MenuPrincipalPagina> {
-  _EstadoMenuPrincipal();
+  void _logout(BuildContext context) {
+    final auth = context.watch<ServicoAutenticacao>();
+    auth.logout();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,10 +42,8 @@ class _EstadoMenuPrincipal extends State<MenuPrincipalPagina> {
           IconButton(
               onPressed: () => showDialog(
                     context: context,
-                    builder: (context) => DialogCuidado(
-                      onClick: () {
-                        context.watch<ServicoAutenticacao>().logout();
-                      },
+                    builder: (dialogContext) => DialogCuidado(
+                      onClick: () => _logout(context),
                       texto: "Tem certeza que deseja sair?",
                       textoBotao: "Sair",
                     ),

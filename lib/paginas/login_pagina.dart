@@ -24,10 +24,10 @@ class _TelaLoginState extends State<TelaLogin> {
       final valido = estadoAtual.saveAndValidate();
       if (valido) {
         String usuario = estadoAtual.fields["usuario"]!.value;
-        String senha = estadoAtual.value["senha"]!.value;
+        String senha = estadoAtual.fields["senha"]!.value;
         try {
           setState(() => _carregando = true);
-          await context.watch<ServicoAutenticacao>().login(usuario, senha);
+          await context.read<ServicoAutenticacao>().login(usuario, senha);
         } on AuthException catch (e) {
           setState(() => _carregando = false);
           ScaffoldMessenger.of(context)

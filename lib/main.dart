@@ -9,6 +9,7 @@ import 'package:politech/viewModels/chamada_view_model.dart';
 import 'package:politech/viewModels/presenca_view_model.dart';
 import 'package:politech/viewModels/turma_view_model.dart';
 import 'package:politech/viewModels/usuario_view_model.dart';
+import 'package:politech/widgets/autenticacao/auto_autenticacao.dart';
 import 'package:provider/provider.dart';
 import 'config/init_config.dart';
 
@@ -27,11 +28,6 @@ void main() async {
       ],
       child: MaterialApp(
         theme: ThemeData(colorScheme: ColorsTheme().lightColorsScheme()),
-        initialRoute: 'lib/paginas/',
-        // Rota inicial como '/login'
-        routes: {
-          'lib/paginas/': (context) => TelaLogin(),
-        },
         localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
@@ -43,7 +39,7 @@ void main() async {
           future: GetIt.instance.allReady(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
-              return TelaLogin();
+              return const AutoAutenticacao();
             } else {
               return const Center(
                 child: CircularProgressIndicator(),

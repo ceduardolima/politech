@@ -49,9 +49,9 @@ class ServicoAutenticacao extends ChangeNotifier {
     notifyListeners();
   }
 
-  void logout() {
-    _auth.signOut();
-    notifyListeners();
+  void logout() async {
+    await _auth.signOut();
+    _obterUsuario();
   }
 
   User? get usuario => _usuario;

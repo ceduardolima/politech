@@ -137,10 +137,6 @@ class _CadastroFomulario extends StatelessWidget {
             decoration: const InputDecoration(labelText: 'Cpf', helperText: ""),
             validator: FormBuilderValidators.compose([
               FormBuilderValidators.required(errorText: "Campo obrigatorio"),
-              FormBuilderValidators.minWordsCount(11,
-                  allowEmpty: false, errorText: "CPF inválido"),
-              FormBuilderValidators.maxWordsCount(11,
-                  errorText: "CPF inválido"),
             ]),
           ),
           FormBuilderTextField(

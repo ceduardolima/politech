@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:politech/paginas/login_pagina.dart';
+import 'package:politech/paginas/menu_principal_pagina.dart';
 import 'package:politech/servicos/servico_autenticacao.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +20,7 @@ class _AutoAutenticacaoState extends State<AutoAutenticacao> {
     } else if (autenticacao.usuario == null) {
       return TelaLogin();
     } else {
-      return TelaLogin();
+      return MenuPrincipalPagina();
     }
   }
 

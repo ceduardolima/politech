@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:politech/theme/colors_theme.dart';
 
-class DialogCuidadoExcluir extends StatelessWidget {
-  const DialogCuidadoExcluir({super.key, required this.excluir});
-  final Function() excluir;
+class DialogCuidado extends StatelessWidget {
+  const DialogCuidado({super.key, required this.onClick, required this.texto, required this.textoBotao});
+  final String texto;
+  final String textoBotao;
+  final Function() onClick;
   
   @override
   Widget build(BuildContext context) {
@@ -19,21 +21,18 @@ class DialogCuidadoExcluir extends StatelessWidget {
           const Text("Cuidado"),
         ],
       ),
-      content: const Text(
-          "Excluindo uma turma, você também excluirá todas as"
-              " chamadas feitas até o momento.\n\n"
-              "Tem certeza que deseja excluir a turma?"),
+      content: Text(texto),
       actions: [
         ElevatedButton(
           onPressed:() {
-            excluir();
+            onClick();
             Navigator.pop(context);
           },
-          child: Text("Excluir"),
           style: ElevatedButton.styleFrom(
             backgroundColor:
             ColorsTheme().lightColorsScheme().secondary,
           ),
+          child: Text(textoBotao),
         ),
         TextButton(
             onPressed: () => Navigator.pop(context),

@@ -7,7 +7,7 @@ import 'package:politech/viewModels/chamada_view_model.dart';
 import 'package:politech/viewModels/turma_view_model.dart';
 import 'package:politech/widgets/botoes/criar_floating_action_button.dart';
 import 'package:politech/widgets/dialogs/dialog_adicionar_turma.dart';
-import 'package:politech/widgets/dialogs/dialog_cuidado_excluir.dart';
+import 'package:politech/widgets/dialogs/dialog_cuidado.dart';
 import 'package:politech/widgets/itens_lista/turma_item_lista.dart';
 import 'package:provider/provider.dart';
 
@@ -78,8 +78,12 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
               excluirTurma: () {
                 showDialog(
                   context: context,
-                  builder: (context) => DialogCuidadoExcluir(
-                    excluir: () async {
+                  builder: (context) => DialogCuidado(
+                    texto:  "Excluindo uma turma, você também excluirá todas as"
+                        " chamadas feitas até o momento.\n\n"
+                        "Tem certeza que deseja excluir a turma?",
+                    textoBotao: "Excluir",
+                    onClick: () async {
                       await presencaViewModel.excluirPresencaDaturma(turma.id);
                       await chamadaViewModel.excluirChamadaDaTurma(turma.id);
                       await alunoViewModel.excluirAlunosDaTurma(turma.id);

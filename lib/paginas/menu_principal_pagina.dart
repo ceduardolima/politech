@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:politech/paginas/cadastro_turma_pagina.dart';
 import 'package:politech/servicos/servico_autenticacao.dart';
+import 'package:politech/servicos/servico_realtime_database.dart';
 import 'package:politech/theme/colors_theme.dart';
 import 'package:politech/widgets/dialogs/dialog_cuidado.dart';
 import 'package:provider/provider.dart';
@@ -8,20 +9,29 @@ import 'package:provider/provider.dart';
 import '../widgets/botoes/menu_principal_botoes.dart';
 
 class MenuPrincipalPagina extends StatelessWidget {
-  const MenuPrincipalPagina({super.key});
+  MenuPrincipalPagina({super.key});
+
+  late ServicoAutenticacao autenticacao;
+  late ServicoRealTimeDatabase firebase;
+  String? titulo;
 
   void _logout(BuildContext context) {
-    final auth = context.watch<ServicoAutenticacao>();
-    auth.logout();
+    autenticacao.logout();
   }
 
   @override
   Widget build(BuildContext context) {
+    autenticacao = context.watch<ServicoAutenticacao>();
+    firebase = context.watch<ServicoRealTimeDatabase>();
+    firebase.pesquisarUsuario(autenticacao.usuario!.uid);
+    if (firebase.usuario != null) {
+      titulo = firebase.usuario!.nome;
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text(
-          "Nome do Usuario",
+        title: Text(
+          titulo != null ? titulo! : "",
           style: TextStyle(fontSize: 20, color: Colors.white),
         ),
         primary: true,
@@ -57,28 +67,33 @@ class MenuPrincipalPagina extends StatelessWidget {
         elevation: 0.0,
       ),
       body: _ContainerCurvo(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 32.0),
-          child: GridView.count(
-            crossAxisCount: 2,
-            crossAxisSpacing: 40,
-            mainAxisSpacing: 30,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              MeuPrincipalBotao(
-                onClick: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TelaCadastroTurma(),
-                    ),
-                  ),
-                titulo: "Turmas",
-                icone: Icons.school,
-              )
-            ],
-          ),
-        ),
+        child: titulo == null
+            ? Center(
+              child: CircularProgressIndicator(
+                  color: ColorsTheme().lightColorsScheme().primaryContainer),
+            )
+            : Padding(
+                padding: const EdgeInsets.only(top: 32.0),
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 40,
+                  mainAxisSpacing: 30,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    MeuPrincipalBotao(
+                      onClick: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TelaCadastroTurma(),
+                        ),
+                      ),
+                      titulo: "Turmas",
+                      icone: Icons.school,
+                    )
+                  ],
+                ),
+              ),
       ),
     );
   }

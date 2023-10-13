@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:politech/paginas/login_pagina.dart';
 import 'package:politech/servicos/servico_autenticacao.dart';
+import 'package:politech/servicos/servico_realtime_database.dart';
 import 'package:politech/theme/colors_theme.dart';
 import 'package:politech/viewModels/aluno_view_model.dart';
 import 'package:politech/viewModels/chamada_view_model.dart';
@@ -20,6 +21,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ServicoAutenticacao()),
+        ChangeNotifierProvider(create: (_) => ServicoRealTimeDatabase()),
         ChangeNotifierProvider(create: (_) => ChamadaViewModel()),
         ChangeNotifierProvider(create: (_) => TurmaViewModel()),
         ChangeNotifierProvider(create: (_) => AlunoViewModel()),
@@ -39,7 +41,7 @@ void main() async {
           future: GetIt.instance.allReady(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
-              return const AutoAutenticacao();
+              return AutoAutenticacao();
             } else {
               return const Center(
                 child: CircularProgressIndicator(),

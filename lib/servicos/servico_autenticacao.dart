@@ -31,9 +31,9 @@ class ServicoAutenticacao extends ChangeNotifier {
       }
     }
   }
-  Future<void> cadastrar(Usuario usuario, String senha) async {
+  Future<void> cadastrar(String email, String senha) async {
     try {
-      await _auth.createUserWithEmailAndPassword(email: usuario.email, password: senha);
+      await _auth.createUserWithEmailAndPassword(email: email, password: senha);
       _obterUsuario();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {

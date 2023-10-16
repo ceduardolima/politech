@@ -5,28 +5,23 @@ import 'package:uuid/uuid.dart';
 
 part 'aluno.g.dart';
 
-@Entity(tableName: "alunos", primaryKeys: [
-  'id'
-],foreignKeys: [
-  ForeignKey(childColumns: ["turma_id"], parentColumns: ["id"], entity: Turma)
-],
-    indices: [
-  Index(value: ["num_inscricao"]),
-  Index(value: ["cpf"])
-])
+@Entity(
+  tableName: "alunos",
+  primaryKeys: ['id'],
+  foreignKeys: [
+    ForeignKey(childColumns: ["turma_id"], parentColumns: ["id"], entity: Turma)
+  ],
+)
 @JsonSerializable()
 class Aluno {
   late String id;
-  @ColumnInfo(name: "num_inscricao")
-  String numInscricao;
   @ColumnInfo(name: "turma_id")
   String turmaId;
   String nome;
-  String cpf;
 
-  Aluno(this.id, this.numInscricao, this.nome, this.cpf, this.turmaId);
+  Aluno(this.id, this.nome, this.turmaId);
 
-  Aluno.genId(this.numInscricao, this.nome, this.cpf, this.turmaId) {
+  Aluno.genId(this.nome, this.turmaId) {
     id = const Uuid().v4().toString();
   }
 
@@ -38,7 +33,7 @@ class Aluno {
 
   @override
   String toString() {
-    return 'Aluno{id: $id, incricao: $numInscricao, nome: $nome, cpf: $cpf, turmaId: $turmaId}';
+    return 'Aluno{id: $id, nome: $nome, turmaId: $turmaId}';
   }
 
   @override

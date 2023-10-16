@@ -95,17 +95,13 @@ class _$PolitechDb extends PolitechDb {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `usuario` (`id` TEXT NOT NULL, `cpf` TEXT NOT NULL, `nome` TEXT NOT NULL, `email` TEXT NOT NULL, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `alunos` (`id` TEXT NOT NULL, `num_inscricao` TEXT NOT NULL, `turma_id` TEXT NOT NULL, `nome` TEXT NOT NULL, `cpf` TEXT NOT NULL, FOREIGN KEY (`turma_id`) REFERENCES `turmas` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `alunos` (`id` TEXT NOT NULL, `turma_id` TEXT NOT NULL, `nome` TEXT NOT NULL, FOREIGN KEY (`turma_id`) REFERENCES `turmas` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `presencas` (`id` TEXT NOT NULL, `aluno_id` TEXT NOT NULL, `chamada_id` TEXT NOT NULL, `presente` INTEGER NOT NULL, `data` INTEGER NOT NULL, FOREIGN KEY (`aluno_id`) REFERENCES `alunos` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`chamada_id`) REFERENCES `chamadas` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `turmas` (`id` TEXT NOT NULL, `codigo` TEXT NOT NULL, `nome` TEXT NOT NULL, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `chamadas` (`id` TEXT NOT NULL, `data` INTEGER NOT NULL, `turma_id` TEXT NOT NULL, FOREIGN KEY (`turma_id`) REFERENCES `turmas` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
-        await database.execute(
-            'CREATE INDEX `index_alunos_num_inscricao` ON `alunos` (`num_inscricao`)');
-        await database
-            .execute('CREATE INDEX `index_alunos_cpf` ON `alunos` (`cpf`)');
         await database.execute(
             'CREATE INDEX `index_presencas_aluno_id` ON `presencas` (`aluno_id`)');
 
@@ -273,10 +269,8 @@ class _$AlunoDao extends AlunoDao {
             'alunos',
             (Aluno item) => <String, Object?>{
                   'id': item.id,
-                  'num_inscricao': item.numInscricao,
                   'turma_id': item.turmaId,
-                  'nome': item.nome,
-                  'cpf': item.cpf
+                  'nome': item.nome
                 },
             changeListener),
         _alunoUpdateAdapter = UpdateAdapter(
@@ -285,10 +279,8 @@ class _$AlunoDao extends AlunoDao {
             ['id'],
             (Aluno item) => <String, Object?>{
                   'id': item.id,
-                  'num_inscricao': item.numInscricao,
                   'turma_id': item.turmaId,
-                  'nome': item.nome,
-                  'cpf': item.cpf
+                  'nome': item.nome
                 },
             changeListener),
         _alunoDeletionAdapter = DeletionAdapter(
@@ -297,10 +289,8 @@ class _$AlunoDao extends AlunoDao {
             ['id'],
             (Aluno item) => <String, Object?>{
                   'id': item.id,
-                  'num_inscricao': item.numInscricao,
                   'turma_id': item.turmaId,
-                  'nome': item.nome,
-                  'cpf': item.cpf
+                  'nome': item.nome
                 },
             changeListener);
 
@@ -319,23 +309,15 @@ class _$AlunoDao extends AlunoDao {
   @override
   Future<List<Aluno>> listar() async {
     return _queryAdapter.queryList('SELECT * From alunos LIMIT 20',
-        mapper: (Map<String, Object?> row) => Aluno(
-            row['id'] as String,
-            row['num_inscricao'] as String,
-            row['nome'] as String,
-            row['cpf'] as String,
-            row['turma_id'] as String));
+        mapper: (Map<String, Object?> row) => Aluno(row['id'] as String,
+            row['nome'] as String, row['turma_id'] as String));
   }
 
   @override
   Stream<List<Aluno>> assistirListaAluno() {
     return _queryAdapter.queryListStream('SELECT * From alunos',
-        mapper: (Map<String, Object?> row) => Aluno(
-            row['id'] as String,
-            row['num_inscricao'] as String,
-            row['nome'] as String,
-            row['cpf'] as String,
-            row['turma_id'] as String),
+        mapper: (Map<String, Object?> row) => Aluno(row['id'] as String,
+            row['nome'] as String, row['turma_id'] as String),
         queryableName: 'alunos',
         isView: false);
   }
@@ -343,24 +325,16 @@ class _$AlunoDao extends AlunoDao {
   @override
   Future<List<Aluno>> listarComLimite(int limite) async {
     return _queryAdapter.queryList('SELECT * From alunos LIMIT ?1',
-        mapper: (Map<String, Object?> row) => Aluno(
-            row['id'] as String,
-            row['num_inscricao'] as String,
-            row['nome'] as String,
-            row['cpf'] as String,
-            row['turma_id'] as String),
+        mapper: (Map<String, Object?> row) => Aluno(row['id'] as String,
+            row['nome'] as String, row['turma_id'] as String),
         arguments: [limite]);
   }
 
   @override
   Future<Aluno?> procurarPorId(String id) async {
     return _queryAdapter.query('SELECT * From alunos WHERE id=?1',
-        mapper: (Map<String, Object?> row) => Aluno(
-            row['id'] as String,
-            row['num_inscricao'] as String,
-            row['nome'] as String,
-            row['cpf'] as String,
-            row['turma_id'] as String),
+        mapper: (Map<String, Object?> row) => Aluno(row['id'] as String,
+            row['nome'] as String, row['turma_id'] as String),
         arguments: [id]);
   }
 
@@ -368,25 +342,9 @@ class _$AlunoDao extends AlunoDao {
   Future<List<Aluno>> procurarPorNome(String nome) async {
     return _queryAdapter.queryList(
         'SELECT * FROM alunos WHERE nome LIKE ?1 LIMIT 20',
-        mapper: (Map<String, Object?> row) => Aluno(
-            row['id'] as String,
-            row['num_inscricao'] as String,
-            row['nome'] as String,
-            row['cpf'] as String,
-            row['turma_id'] as String),
+        mapper: (Map<String, Object?> row) => Aluno(row['id'] as String,
+            row['nome'] as String, row['turma_id'] as String),
         arguments: [nome]);
-  }
-
-  @override
-  Future<Aluno?> procurarPorInscricao(String inscricao) async {
-    return _queryAdapter.query('SELECT * From alunos WHERE num_inscricao=?1',
-        mapper: (Map<String, Object?> row) => Aluno(
-            row['id'] as String,
-            row['num_inscricao'] as String,
-            row['nome'] as String,
-            row['cpf'] as String,
-            row['turma_id'] as String),
-        arguments: [inscricao]);
   }
 
   @override
@@ -475,24 +433,16 @@ class _$PresencaDao extends PresencaDao {
   Future<List<Aluno>> listarAlunosPresentes() async {
     return _queryAdapter.queryList(
         'SELECT alunos.* FROM alunos LEFT JOIN presencas ON alunos.id = presencas.aluno_id WHERE presente = 1',
-        mapper: (Map<String, Object?> row) => Aluno(
-            row['id'] as String,
-            row['num_inscricao'] as String,
-            row['nome'] as String,
-            row['cpf'] as String,
-            row['turma_id'] as String));
+        mapper: (Map<String, Object?> row) => Aluno(row['id'] as String,
+            row['nome'] as String, row['turma_id'] as String));
   }
 
   @override
   Future<List<Aluno>> listarAlunosFaltates() async {
     return _queryAdapter.queryList(
         'SELECT alunos.* FROM alunos LEFT JOIN presencas ON alunos.id = presencas.aluno_id WHERE presente = 0',
-        mapper: (Map<String, Object?> row) => Aluno(
-            row['id'] as String,
-            row['num_inscricao'] as String,
-            row['nome'] as String,
-            row['cpf'] as String,
-            row['turma_id'] as String));
+        mapper: (Map<String, Object?> row) => Aluno(row['id'] as String,
+            row['nome'] as String, row['turma_id'] as String));
   }
 
   @override
@@ -525,7 +475,7 @@ class _$PresencaDao extends PresencaDao {
   ) async {
     return _queryAdapter.queryList(
         'SELECT alunos.* FROM alunos LEFT JOIN presencas ON alunos.id = presencas.aluno_id WHERE presencas.chamada_id = ?1 AND presencas.presente = ?2',
-        mapper: (Map<String, Object?> row) => Aluno(row['id'] as String, row['num_inscricao'] as String, row['nome'] as String, row['cpf'] as String, row['turma_id'] as String),
+        mapper: (Map<String, Object?> row) => Aluno(row['id'] as String, row['nome'] as String, row['turma_id'] as String),
         arguments: [chamadaId, presenca ? 1 : 0]);
   }
 
@@ -608,7 +558,7 @@ class _$TurmaDao extends TurmaDao {
   Future<List<Aluno>> listarAlunos(String turmaId) async {
     return _queryAdapter.queryList(
         'SELECT alunos.* FROM turmas LEFT JOIN alunos ON alunos.turma_id = turmas.id WHERE turmas.id = ?1',
-        mapper: (Map<String, Object?> row) => Aluno(row['id'] as String, row['num_inscricao'] as String, row['nome'] as String, row['cpf'] as String, row['turma_id'] as String),
+        mapper: (Map<String, Object?> row) => Aluno(row['id'] as String, row['nome'] as String, row['turma_id'] as String),
         arguments: [turmaId]);
   }
 

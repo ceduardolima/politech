@@ -18,7 +18,6 @@ class ServicoRealTimeDatabase extends ChangeNotifier {
     if (data != null && data.exists) {
       Map<String, dynamic> valor = Map.from(data.value! as Map);
       _usuario = Usuario.fromJson(valor);
-      debugPrint(_usuario.toString());
       notifyListeners();
     }
   }

@@ -26,7 +26,15 @@ class AlunoViewModel extends ChangeNotifier {
   AlunoRepositorio get aluno => _alunoRepositorio;
 
   Future<void> inserirLista(List<Aluno> alunos) async {
+    alunos = _nomeAlunosMaiusculo(alunos);
     await _alunoRepositorio.inserirLista(alunos);
+  }
+
+  List<Aluno> _nomeAlunosMaiusculo(List<Aluno> alunos) {
+     for (var aluno in alunos) {
+       aluno.nome = aluno.nome.toUpperCase();
+     }
+     return alunos;
   }
   
   Future<bool> excluirAlunosDaTurma(String turmaId) async {

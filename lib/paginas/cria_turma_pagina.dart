@@ -102,7 +102,7 @@ class _CriaTurmaPaginaPaginaState extends State<CriaTurmaPaginaPagina> {
                 ),
                 const SizedBox(height: 20),
                 const Text(
-                  "Alunos da turma",
+                  "Adicionar alunos",
                   style: TextStyle(fontSize: 18, color: Colors.black87),
                 ),
                 const SizedBox(height: 10),

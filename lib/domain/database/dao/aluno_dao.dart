@@ -27,9 +27,6 @@ abstract class AlunoDao {
   @Query("SELECT * FROM alunos WHERE nome LIKE :nome LIMIT 20")
   Future<List<Aluno>> procurarPorNome(String nome);
 
-  @Query("SELECT * From alunos WHERE num_inscricao=:inscricao")
-  Future<Aluno?> procurarPorInscricao(String inscricao);
-  
   @Query("DELETE FROM alunos WHERE turma_id = :turmaId")
   Future<int?> excluirAlunosDaTurma(String turmaId);
 

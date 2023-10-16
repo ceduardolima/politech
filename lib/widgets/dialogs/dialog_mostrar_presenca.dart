@@ -57,11 +57,6 @@ class DialogMostrarPresenca extends StatelessWidget {
                             style: const TextStyle(
                                 overflow: TextOverflow.ellipsis, fontSize: 16),
                           ),
-                          Text(
-                            alunos[index].cpf,
-                            style: const TextStyle(
-                                overflow: TextOverflow.ellipsis, fontSize: 16),
-                          ),
                         ],
                       ),
                     ),

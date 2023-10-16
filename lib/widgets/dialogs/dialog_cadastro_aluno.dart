@@ -15,9 +15,7 @@ class DialogCadastroAluno extends StatelessWidget {
     final estado = _chaveCriarAluno.currentState;
     if (estado != null && estado.saveAndValidate()) {
       return Aluno.genId(
-        estado.fields["incricao"]!.value!,
         estado.fields["nome"]!.value!,
-        estado.fields["cpf"]!.value!,
         turmaId
       );
     }
@@ -40,27 +38,9 @@ class DialogCadastroAluno extends StatelessWidget {
         child: Column(
           children: [
             FormBuilderTextField(
-              name: "incricao",
-              decoration: const InputDecoration(
-                  labelText: 'Número de incrição', helperText: ""),
-              validator: FormBuilderValidators.compose([
-                FormBuilderValidators.required(errorText: "Campor obrigatório"),
-                FormBuilderValidators.numeric(errorText: "O campo deve conter apenas números")
-              ]),
-            ),
-            FormBuilderTextField(
-              name: "cpf",
-              decoration:
-                  const InputDecoration(labelText: 'Cpf', helperText: ""),
-              validator: FormBuilderValidators.compose([
-                FormBuilderValidators.required(errorText: "Campor obrigatório"),
-                FormBuilderValidators.numeric(errorText: "Campo invalido"),
-                FormBuilderValidators.minLength(11, errorText: "Cpf invalido"),
-                FormBuilderValidators.maxLength(11, errorText: "Cpf invalido")
-              ]),
-            ),
-            FormBuilderTextField(
               name: "nome",
+              maxLines: 1,
+              maxLength: 50,
               decoration:
                   const InputDecoration(labelText: 'Nome', helperText: ""),
               validator: FormBuilderValidators.compose([

@@ -28,6 +28,8 @@ class ServicoAutenticacao extends ChangeNotifier {
         throw AuthException("Senha é muito fraca!");
       } if (e.code == 'email-already-in-use') {
         throw AuthException("Email já esxite.");
+      } else {
+        throw AuthException("Não foi possível realizar o login");
       }
     }
   }
@@ -40,6 +42,8 @@ class ServicoAutenticacao extends ChangeNotifier {
         throw AuthException("Senha é muito fraca!");
       } if (e.code == 'email-already-in-use') {
         throw AuthException("Email já esxite.");
+      } else {
+        throw AuthException("Não foi possivel cadastrar o usuário");
       }
     }
   }

@@ -1,5 +1,6 @@
 import 'package:politech/paginas/chamada_pagina.dart';
 import 'package:politech/paginas/cria_turma_pagina.dart';
+import 'package:politech/paginas/turma_menu_pagina.dart';
 import 'package:politech/theme/colors_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:politech/viewModels/aluno_view_model.dart';
@@ -96,7 +97,7 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ChamadaPagina(
+                    builder: (context) => TurmaMenuPagina(
                       turma: turma,
                     ),
                   ),

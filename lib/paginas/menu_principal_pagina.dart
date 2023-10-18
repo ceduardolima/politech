@@ -6,7 +6,7 @@ import 'package:politech/theme/colors_theme.dart';
 import 'package:politech/widgets/dialogs/dialog_cuidado.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/botoes/menu_principal_botoes.dart';
+import '../widgets/botoes/menu_botao.dart';
 
 class MenuPrincipalPagina extends StatelessWidget {
   MenuPrincipalPagina({super.key});

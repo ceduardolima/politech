@@ -1,3 +1,4 @@
+import 'package:floor/floor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
 import 'package:politech/domain/repositorio/chamada_repositorio.dart';
@@ -17,6 +18,7 @@ class ChamadaViewModel extends ChangeNotifier {
     assistirChamada(turmaId);
   }
 
+  @transaction
   void assistirChamada(String turmaId) {
     _chamadaRepositorio.assistirChamadasDaTurma(turmaId).listen((lista) {
       _chamadas = lista;
@@ -24,6 +26,7 @@ class ChamadaViewModel extends ChangeNotifier {
     });
   }
 
+  @transaction
   Future<void> inserir(Chamada chamada) async {
     await _chamadaRepositorio.inserir(chamada);
     notifyListeners();

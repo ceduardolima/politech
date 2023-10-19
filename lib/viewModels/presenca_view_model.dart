@@ -1,3 +1,4 @@
+import 'package:floor/floor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
 import 'package:politech/domain/repositorio/presenca_repositorio.dart';
@@ -26,9 +27,10 @@ class PresencaViewModel extends ChangeNotifier {
     });
   }
 
-  Future<void> inserirAlunosPresentes(String chamadaId, DateTime data, List<String> listaAlunoId) async {
-    List<Presenca> presencas = listaAlunoId.map((e) =>
-        Presenca.genId(e, true, data, chamadaId)).toList();
+  @transaction
+  Future<void> inserirFaltas(String chamadaId, DateTime data, List<Aluno> alunosFaltantes) async {
+    List<Presenca> presencas = alunosFaltantes.map((e) =>
+        Presenca.genId(e.id, false, data, chamadaId)).toList();
     await _presencaRepositorio.inserirLista(presencas);
   }
 

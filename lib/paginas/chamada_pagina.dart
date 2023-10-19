@@ -1,3 +1,4 @@
+import 'package:floor/floor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
@@ -29,16 +30,16 @@ class ChamadaPagina extends StatelessWidget {
   late final String title;
 
   /// Faz a chamada dos alunos presentes
-  Future<void> criarChamada(List<String> chamadaJson) async {
+  @transaction
+  Future<void> criarChamada(List<Aluno> chamadaJson) async {
     final hoje = DateTime.now();
     final chamada = Chamada.genId(hoje, turma.id);
     await chamadaViewModel.inserir(chamada);
-    await presencaViewModel.inserirAlunosPresentes(
-        chamada.id, hoje, chamadaJson);
+    await presencaViewModel.inserirFaltas(chamada.id, hoje, chamadaJson);
   }
 
   String _limitandoTexto(String texto) =>
-    texto.length > 20 ? "${texto.substring(0, 25)}..." : texto;
+      texto.length > 20 ? "${texto.substring(0, 25)}..." : texto;
 
   /// Transforma a lista de alunos em uma FormBuilderFieldOption Para ser usada
   /// no FormBuilderFieldOption
@@ -52,7 +53,9 @@ class ChamadaPagina extends StatelessWidget {
                     const Spacer(),
                     Text(
                       _limitandoTexto(aluno.nome),
-                      style: const TextStyle(fontSize: 16, ),
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -68,17 +71,7 @@ class ChamadaPagina extends StatelessWidget {
       context: context,
       builder: (context) => DialogBotaoUnico(
         titulo: "${hoje.day}/${hoje.month}/${hoje.year}",
-        confirmar: () async {
-          final currentState = _chaveChamada.currentState;
-          if (currentState != null) {
-            _chaveChamada.currentState!.save();
-            final chamadaJson = currentState.value["chamada"];
-            await criarChamada(chamadaJson);
-            if (context.mounted) {
-              Navigator.pop(context);
-            }
-          }
-        },
+        confirmar: () async => await realizarChamada(alunos, context),
         fecharDialog: () => Navigator.pop(context),
         filho: FormBuilder(
           key: _chaveChamada,
@@ -104,6 +97,31 @@ class ChamadaPagina extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> realizarChamada(List<Aluno> alunos, BuildContext context) async {
+    final currentState = _chaveChamada.currentState;
+    if (currentState != null) {
+      _chaveChamada.currentState!.save();
+      List<Aluno> alunosFaltantes = obterAlunosFaltantes(currentState, alunos);
+      await criarChamada(alunosFaltantes);
+      if (context.mounted) {
+        Navigator.pop(context);
+      }
+    }
+  }
+
+  List<Aluno> obterAlunosFaltantes(
+      FormBuilderState currentState, List<Aluno> alunos) {
+    final chamadaJson = currentState.value["chamada"];
+    if (chamadaJson != null) {
+      final idList = List.of(chamadaJson);
+      final alunosFaltantes =
+      alunos.where((e) => !idList.contains(e.id)).toList();
+      return alunosFaltantes;
+    } else {
+      return alunos;
+    }
   }
 
   /// Cria as viewModels que dao acesso ao banco de dados
@@ -143,7 +161,7 @@ class ChamadaPagina extends StatelessWidget {
                   onPressed: () async {
                     final chamadaData = chamada.data;
                     final alunos = await presencaViewModel
-                        .listarAlunosDaChamada(chamada.id, true);
+                        .listarAlunosDaChamada(chamada.id, false);
                     if (context.mounted) {
                       showDialog(
                         context: context,
@@ -158,7 +176,8 @@ class ChamadaPagina extends StatelessWidget {
                     }
                   },
                   onDelete: () async {
-                    await presencaViewModel.excluirPresencaDaChamada(chamada.id);
+                    await presencaViewModel
+                        .excluirPresencaDaChamada(chamada.id);
                     await chamadaViewModel.excluir(chamada);
                   },
                 );

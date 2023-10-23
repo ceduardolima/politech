@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:politech/domain/turma/turma.dart';
 import 'package:politech/paginas/chamada_pagina.dart';
+import 'package:politech/paginas/presencas_pagina.dart';
 import 'package:politech/widgets/botoes/menu_botao.dart';
 
 class TurmaMenuPagina extends StatelessWidget {
@@ -23,18 +24,22 @@ class TurmaMenuPagina extends StatelessWidget {
           mainAxisSpacing: 20,
           children: [
             MeuPrincipalBotao(
-              onClick: () =>
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ChamadaPagina(turma: turma),
-                  ),
+              onClick: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChamadaPagina(turma: turma),
                 ),
+              ),
               titulo: "Chamada",
               imagem: const AssetImage("assets/icones/chamada.png"),
             ),
             MeuPrincipalBotao(
-              onClick: () {},
+              onClick: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PresencaPagina(turmaId: turma.id,),
+                ),
+              ),
               titulo: "Presenças",
               icone: Icons.check_circle_outline,
             ),

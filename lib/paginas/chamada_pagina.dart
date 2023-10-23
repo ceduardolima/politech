@@ -1,11 +1,8 @@
 import 'package:floor/floor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:intl/intl.dart';
 import 'package:politech/domain/chamada/chamada.dart';
 import 'package:politech/domain/turma/turma.dart';
-import 'package:politech/theme/colors_theme.dart';
-import 'package:politech/viewModels/aluno_view_model.dart';
 import 'package:politech/viewModels/chamada_view_model.dart';
 import 'package:politech/viewModels/presenca_view_model.dart';
 import 'package:politech/viewModels/turma_view_model.dart';
@@ -117,7 +114,7 @@ class ChamadaPagina extends StatelessWidget {
     if (chamadaJson != null) {
       final idList = List.of(chamadaJson);
       final alunosFaltantes =
-      alunos.where((e) => !idList.contains(e.id)).toList();
+          alunos.where((e) => !idList.contains(e.id)).toList();
       return alunosFaltantes;
     } else {
       return alunos;
@@ -147,7 +144,12 @@ class ChamadaPagina extends StatelessWidget {
       ),
       floatingActionButton: CriarFloatActionButton(
           label: "Chamada",
-          onPressed: () => criarDialogChamada(context, turmaViewModel.alunos)),
+          onPressed: () async {
+            final alunos = await turmaViewModel.listarAlunos(turma.id);
+            if (context.mounted) {
+              criarDialogChamada(context, alunos);
+            }
+          }),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: SafeArea(
         child: Padding(

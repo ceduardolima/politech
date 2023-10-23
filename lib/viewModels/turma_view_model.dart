@@ -26,9 +26,8 @@ class TurmaViewModel extends ChangeNotifier {
     assistirListaDeTurmas();
   }
 
-  Future<void> listarAlunos(String turmaId) async {
-    _alunos = await _turmaRepositorio.listarAlunos(turmaId);
-    notifyListeners();
+  Future<List<Aluno>> listarAlunos(String turmaId) async {
+    return await _turmaRepositorio.listarAlunos(turmaId);
   }
 
   List<Turma> get listaDeTurmas => _turmas;

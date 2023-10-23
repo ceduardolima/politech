@@ -469,6 +469,14 @@ class _$PresencaDao extends PresencaDao {
   }
 
   @override
+  Future<int?> numeroDeFaltasDoAluno(String alunoId) async {
+    return _queryAdapter.query(
+        'SELECT COUNT(*) FROM presencas WHERE aluno_id=?1 AND presente=0',
+        mapper: (Map<String, Object?> row) => row.values.first as int,
+        arguments: [alunoId]);
+  }
+
+  @override
   Future<List<Aluno>> listarAlunosDaChamada(
     String chamadaId,
     bool presenca,

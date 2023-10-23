@@ -33,17 +33,30 @@ class PresencaRepositorio {
   }
 
   @transaction
+  Future<List<int>> numeroDeFaltasDoAluno(List<String> listaId) async {
+    List<int> listaFaltas = [];
+    for (var id in listaId) {
+      int? numFaltas = await _presencaDao.numeroDeFaltasDoAluno(id);
+      listaFaltas.add(numFaltas ?? 0);
+    }
+    return listaFaltas;
+  }
+
+  @transaction
   Future<List<Aluno>> listarAlunosFaltates() async {
     return await _presencaDao.listarAlunosFaltates();
   }
 
   @transaction
-  Future<List<Presenca>> listarPresencasDoAluno(String alunoId, DateTime inicio, DateTime fim, bool presente) async {
-    return await _presencaDao.listarPresencasDoAluno(alunoId, inicio, fim, presente);
+  Future<List<Presenca>> listarPresencasDoAluno(
+      String alunoId, DateTime inicio, DateTime fim, bool presente) async {
+    return await _presencaDao.listarPresencasDoAluno(
+        alunoId, inicio, fim, presente);
   }
 
   @transaction
-  Future<List<Aluno>> listarAlunosDaChamada(String chamadaId, bool presente) async {
+  Future<List<Aluno>> listarAlunosDaChamada(
+      String chamadaId, bool presente) async {
     return await _presencaDao.listarAlunosDaChamada(chamadaId, presente);
   }
 

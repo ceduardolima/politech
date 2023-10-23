@@ -22,6 +22,9 @@ abstract class PresencaDao {
   @Query("SELECT * FROM presencas "
       "WHERE presente = :presente AND data >= :inicio AND data <= :fim AND aluno_id = :alunoId")
   Future<List<Presenca>> listarPresencasDoAluno(String alunoId, DateTime inicio, DateTime fim, bool presente);
+  
+  @Query("SELECT COUNT(*) FROM presencas WHERE aluno_id=:alunoId AND presente=0")
+  Future<int?> numeroDeFaltasDoAluno(String alunoId);
 
   @Query("SELECT alunos.* FROM alunos "
       "LEFT JOIN presencas ON alunos.id = presencas.aluno_id "

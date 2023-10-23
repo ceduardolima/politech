@@ -38,6 +38,11 @@ class PresencaViewModel extends ChangeNotifier {
     return await _presencaRepositorio.listarAlunosDaChamada(chamadaId, presente);
   }
 
+  Future<List<int>> numFaltasDosAlunos(List<Aluno> alunos) async {
+    List<String> alunosId = alunos.map((e) => e.id).toList();
+    return await _presencaRepositorio.numeroDeFaltasDoAluno(alunosId);
+  }
+
   Future<void> excluirPresencaDaChamada(String chamadaId) async {
     await _presencaRepositorio.excluirPresencaDaChamada(chamadaId);
     notifyListeners();

@@ -541,6 +541,16 @@ class _$TurmaDao extends TurmaDao {
                   'nome': item.nome
                 },
             changeListener),
+        _turmaUpdateAdapter = UpdateAdapter(
+            database,
+            'turmas',
+            ['id'],
+            (Turma item) => <String, Object?>{
+                  'id': item.id,
+                  'codigo': item.codigo,
+                  'nome': item.nome
+                },
+            changeListener),
         _turmaDeletionAdapter = DeletionAdapter(
             database,
             'turmas',
@@ -559,6 +569,8 @@ class _$TurmaDao extends TurmaDao {
   final QueryAdapter _queryAdapter;
 
   final InsertionAdapter<Turma> _turmaInsertionAdapter;
+
+  final UpdateAdapter<Turma> _turmaUpdateAdapter;
 
   final DeletionAdapter<Turma> _turmaDeletionAdapter;
 
@@ -580,18 +592,33 @@ class _$TurmaDao extends TurmaDao {
   }
 
   @override
-  Future<void> inserir(Turma turma) async {
-    await _turmaInsertionAdapter.insert(turma, OnConflictStrategy.fail);
+  Future<void> inserir(Turma t) async {
+    await _turmaInsertionAdapter.insert(t, OnConflictStrategy.abort);
   }
 
   @override
-  Future<void> inserirLista(List<Turma> turma) async {
-    await _turmaInsertionAdapter.insertList(turma, OnConflictStrategy.fail);
+  Future<void> inserirLista(List<Turma> T) async {
+    await _turmaInsertionAdapter.insertList(T, OnConflictStrategy.abort);
   }
 
   @override
-  Future<void> excluir(Turma turma) async {
-    await _turmaDeletionAdapter.delete(turma);
+  Future<void> atuaizar(Turma t) async {
+    await _turmaUpdateAdapter.update(t, OnConflictStrategy.replace);
+  }
+
+  @override
+  Future<void> atuaizarLista(List<Turma> t) async {
+    await _turmaUpdateAdapter.updateList(t, OnConflictStrategy.replace);
+  }
+
+  @override
+  Future<void> excluir(Turma t) async {
+    await _turmaDeletionAdapter.delete(t);
+  }
+
+  @override
+  Future<void> excluirLista(List<Turma> t) async {
+    await _turmaDeletionAdapter.deleteList(t);
   }
 }
 

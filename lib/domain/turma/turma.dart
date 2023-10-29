@@ -27,7 +27,7 @@ class Turma {
 
   @override
   String toString() {
-    return 'Turma{id: $id, nome: $nome}';
+    return 'Turma{id: $id, codigo: $codigo, nome: $nome}';
   }
 
   @override

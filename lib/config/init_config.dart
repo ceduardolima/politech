@@ -2,8 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
 import 'package:politech/domain/database/dao/chamada_dao.dart';
+import 'package:politech/domain/database/dao/horario_dao.dart';
 import 'package:politech/domain/repositorio/aluno_repositorio.dart';
 import 'package:politech/domain/repositorio/chamada_repositorio.dart';
+import 'package:politech/domain/repositorio/horario_repositorio.dart';
 import 'package:politech/domain/repositorio/presenca_repositorio.dart';
 import 'package:politech/domain/repositorio/turma_repositorio.dart';
 import 'package:politech/domain/repositorio/usuario_repositorio.dart';
@@ -40,6 +42,9 @@ Future<void> initConfig() async {
   getIt.registerSingletonWithDependencies<ChamadaDao>(
           () => GetIt.instance.get<PolitechDb>().chamadaDao,
       dependsOn: [PolitechDb]);
+  getIt.registerSingletonWithDependencies<HorarioDao>(
+          () => GetIt.instance.get<PolitechDb>().horarioDao,
+      dependsOn: [PolitechDb]);
   getIt.registerSingletonWithDependencies<UsuarioRepositorio>(
           () => UsuarioRepositorio(),
       dependsOn: [PolitechDb, UsuarioDao]);
@@ -55,5 +60,8 @@ Future<void> initConfig() async {
   getIt.registerSingletonWithDependencies<AlunoRepositorio>(
           () => AlunoRepositorio(),
       dependsOn: [PolitechDb, AlunoDao]);
+  getIt.registerSingletonWithDependencies<HorarioRepositorio>(
+          () => HorarioRepositorio(),
+      dependsOn: [PolitechDb, HorarioDao]);
 }
 

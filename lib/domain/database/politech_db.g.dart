@@ -71,6 +71,8 @@ class _$PolitechDb extends PolitechDb {
 
   ChamadaDao? _chamadaDaoInstance;
 
+  HorarioDao? _horarioDaoInstance;
+
   Future<sqflite.Database> open(
     String path,
     List<Migration> migrations, [
@@ -103,6 +105,8 @@ class _$PolitechDb extends PolitechDb {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `chamadas` (`id` TEXT NOT NULL, `data` INTEGER NOT NULL, `turma_id` TEXT NOT NULL, FOREIGN KEY (`turma_id`) REFERENCES `turmas` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
         await database.execute(
+            'CREATE TABLE IF NOT EXISTS `horarios` (`id` TEXT NOT NULL, `dia_semana` TEXT NOT NULL, `hora` TEXT NOT NULL, `sala` TEXT NOT NULL, `turma_id` TEXT NOT NULL, PRIMARY KEY (`id`))');
+        await database.execute(
             'CREATE INDEX `index_presencas_aluno_id` ON `presencas` (`aluno_id`)');
 
         await callback?.onCreate?.call(database, version);
@@ -134,6 +138,11 @@ class _$PolitechDb extends PolitechDb {
   @override
   ChamadaDao get chamadaDao {
     return _chamadaDaoInstance ??= _$ChamadaDao(database, changeListener);
+  }
+
+  @override
+  HorarioDao get horarioDao {
+    return _horarioDaoInstance ??= _$HorarioDao(database, changeListener);
   }
 }
 
@@ -682,6 +691,99 @@ class _$ChamadaDao extends ChamadaDao {
   @override
   Future<void> excluir(Chamada chamada) async {
     await _chamadaDeletionAdapter.delete(chamada);
+  }
+}
+
+class _$HorarioDao extends HorarioDao {
+  _$HorarioDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
+        _horarioInsertionAdapter = InsertionAdapter(
+            database,
+            'horarios',
+            (Horario item) => <String, Object?>{
+                  'id': item.id,
+                  'dia_semana': item.diaSemana,
+                  'hora': item.hora,
+                  'sala': item.sala,
+                  'turma_id': item.turmaId
+                }),
+        _horarioUpdateAdapter = UpdateAdapter(
+            database,
+            'horarios',
+            ['id'],
+            (Horario item) => <String, Object?>{
+                  'id': item.id,
+                  'dia_semana': item.diaSemana,
+                  'hora': item.hora,
+                  'sala': item.sala,
+                  'turma_id': item.turmaId
+                }),
+        _horarioDeletionAdapter = DeletionAdapter(
+            database,
+            'horarios',
+            ['id'],
+            (Horario item) => <String, Object?>{
+                  'id': item.id,
+                  'dia_semana': item.diaSemana,
+                  'hora': item.hora,
+                  'sala': item.sala,
+                  'turma_id': item.turmaId
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Horario> _horarioInsertionAdapter;
+
+  final UpdateAdapter<Horario> _horarioUpdateAdapter;
+
+  final DeletionAdapter<Horario> _horarioDeletionAdapter;
+
+  @override
+  Future<List<Horario>> listarPorTurma(String turmaId) async {
+    return _queryAdapter.queryList('SELECT * FROM horarios WHERE turma_id=?1',
+        mapper: (Map<String, Object?> row) => Horario(
+            row['id'] as String,
+            row['dia_semana'] as String,
+            row['hora'] as String,
+            row['sala'] as String,
+            row['turma_id'] as String),
+        arguments: [turmaId]);
+  }
+
+  @override
+  Future<void> inserir(Horario t) async {
+    await _horarioInsertionAdapter.insert(t, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> inserirLista(List<Horario> T) async {
+    await _horarioInsertionAdapter.insertList(T, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> atuaizar(Horario t) async {
+    await _horarioUpdateAdapter.update(t, OnConflictStrategy.replace);
+  }
+
+  @override
+  Future<void> atuaizarLista(List<Horario> t) async {
+    await _horarioUpdateAdapter.updateList(t, OnConflictStrategy.replace);
+  }
+
+  @override
+  Future<void> excluir(Horario t) async {
+    await _horarioDeletionAdapter.delete(t);
+  }
+
+  @override
+  Future<void> excluirLista(List<Horario> t) async {
+    await _horarioDeletionAdapter.deleteList(t);
   }
 }
 

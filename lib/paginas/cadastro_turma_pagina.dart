@@ -1,6 +1,7 @@
 import 'package:politech/paginas/chamada_pagina.dart';
 import 'package:politech/paginas/cria_turma_pagina.dart';
 import 'package:politech/paginas/turma_menu_pagina.dart';
+import 'package:politech/servicos/servico_realtime_database.dart';
 import 'package:politech/theme/colors_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:politech/viewModels/aluno_view_model.dart';
@@ -27,6 +28,7 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
   late ChamadaViewModel chamadaViewModel;
   late PresencaViewModel presencaViewModel;
   late AlunoViewModel alunoViewModel;
+  late ServicoRealTimeDatabase db;
 
   void excluirTurma(Turma turma) {
     turmaViewModel.excluir(turma);
@@ -51,6 +53,7 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
     chamadaViewModel = context.watch<ChamadaViewModel>();
     presencaViewModel = context.watch<PresencaViewModel>();
     alunoViewModel = context.watch<AlunoViewModel>();
+    db = context.watch<ServicoRealTimeDatabase>();
     turmaViewModel.assistirListaDeTurmas();
     return Scaffold(
       appBar: AppBar(
@@ -59,12 +62,7 @@ class _TelaCadastroTurmaState extends State<TelaCadastroTurma> {
       ),
       backgroundColor: Colors.white,
       floatingActionButton: CriarFloatActionButton(
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CriaTurmaPaginaPagina(),
-          ),
-        ),
+        onPressed: () async => await db.pesquisarTurmas("adm@gmail.com"),
         label: 'Turma',
       ),
       body: Padding(

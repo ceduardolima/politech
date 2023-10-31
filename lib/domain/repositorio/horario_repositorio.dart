@@ -1,3 +1,4 @@
+import 'package:floor/floor.dart';
 import 'package:get_it/get_it.dart';
 import 'package:politech/domain/database/dao/horario_dao.dart';
 import 'package:politech/domain/horario/horario.dart';
@@ -12,6 +13,10 @@ class HorarioRepositorio extends BandoDeDadosRepositorioPadrao<Horario> {
     super.daoPadrao = _horarioDao;
   }
 
+  @transaction
   Future<List<Horario>> listarPorTurma(String turmaId) async =>
       await _horarioDao.listarPorTurma(turmaId);
+
+  Future<void> excluirPorTurmaId(String turmaId) async =>
+      await _horarioDao.excluirPorTurmaId(turmaId);
 }

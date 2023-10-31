@@ -784,6 +784,12 @@ class _$HorarioDao extends HorarioDao {
   }
 
   @override
+  Future<void> excluirPorTurmaId(String turmaId) async {
+    await _queryAdapter.queryNoReturn('DELETE FROM horarios WHERE turma_id=?1',
+        arguments: [turmaId]);
+  }
+
+  @override
   Future<void> inserir(Horario t) async {
     await _horarioInsertionAdapter.insert(t, OnConflictStrategy.abort);
   }

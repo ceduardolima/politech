@@ -7,6 +7,7 @@ import 'package:politech/servicos/servico_realtime_database.dart';
 import 'package:politech/theme/colors_theme.dart';
 import 'package:politech/viewModels/aluno_view_model.dart';
 import 'package:politech/viewModels/chamada_view_model.dart';
+import 'package:politech/viewModels/db_view_model.dart';
 import 'package:politech/viewModels/horario_view_model.dart';
 import 'package:politech/viewModels/presenca_view_model.dart';
 import 'package:politech/viewModels/turma_view_model.dart';
@@ -29,6 +30,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => PresencaViewModel()),
         ChangeNotifierProvider(create: (_) => UsuarioViewModel()),
         ChangeNotifierProvider(create: (_) => HorarioViewModel()),
+        ChangeNotifierProvider(create: (context) => DbViewModel(context)),
       ],
       child: MaterialApp(
         theme: ThemeData(colorScheme: ColorsTheme().lightColorsScheme()),

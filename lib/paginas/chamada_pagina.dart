@@ -35,9 +35,6 @@ class ChamadaPagina extends StatelessWidget {
     await presencaViewModel.inserirFaltas(chamada.id, hoje, chamadaJson);
   }
 
-  String _limitandoTexto(String texto) =>
-      texto.length > 20 ? "${texto.substring(0, 25)}..." : texto;
-
   /// Transforma a lista de alunos em uma FormBuilderFieldOption Para ser usada
   /// no FormBuilderFieldOption
   List<FormBuilderFieldOption<String>> listaAlunoParaListaOption(
@@ -48,13 +45,15 @@ class ChamadaPagina extends StatelessWidget {
                 child: Row(
                   children: [
                     const Spacer(),
-                    Text(
-                      _limitandoTexto(aluno.nome),
-                      style: const TextStyle(
-                        fontSize: 16,
+                    Expanded(
+                      child: Text(
+                        aluno.nome,
+                        style: const TextStyle(
+                          fontSize: 14,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),

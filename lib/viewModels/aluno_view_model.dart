@@ -21,10 +21,6 @@ class AlunoViewModel extends ChangeNotifier {
     });
   }
 
-  List<Aluno> get listaAluno => _alunos;
-
-  AlunoRepositorio get aluno => _alunoRepositorio;
-
   Future<void> inserirLista(List<Aluno> alunos) async {
     alunos = _nomeAlunosMaiusculo(alunos);
     await _alunoRepositorio.inserirLista(alunos);
@@ -40,4 +36,8 @@ class AlunoViewModel extends ChangeNotifier {
   Future<bool> excluirAlunosDaTurma(String turmaId) async {
     return await _alunoRepositorio.excluirAlunosDaTurma(turmaId);
   }
+
+  List<Aluno> get listaAluno => _alunos;
+
+  AlunoRepositorio get aluno => _alunoRepositorio;
 }

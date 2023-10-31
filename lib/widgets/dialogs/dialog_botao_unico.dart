@@ -19,47 +19,49 @@ class DialogBotaoUnico extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              const Spacer(flex: 6),
-              Text(
-                titulo,
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const Spacer(flex: 3),
-              IconButton(
-                onPressed: fecharDialog,
-                icon: const Icon(
-                  Icons.close,
-                  color: Colors.grey,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                const Spacer(flex: 6),
+                Text(
+                  titulo,
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-              )
-            ],
-          ),
-          SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            padding: const EdgeInsets.symmetric(
-              vertical: 20,
-              horizontal: 40,
+                const Spacer(flex: 3),
+                IconButton(
+                  onPressed: fecharDialog,
+                  icon: const Icon(
+                    Icons.close,
+                    color: Colors.grey,
+                  ),
+                )
+              ],
             ),
-            child: filho,
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              fixedSize: const Size.fromHeight(60),
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.zero,
+            SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              padding: const EdgeInsets.symmetric(
+                vertical: 20,
+                horizontal: 40,
               ),
+              child: filho,
             ),
-            onPressed: confirmar,
-            child: Text(label ?? "CONFIRMAR"),
-          )
-        ],
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                fixedSize: const Size.fromHeight(60),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.zero,
+                ),
+              ),
+              onPressed: confirmar,
+              child: Text(label ?? "CONFIRMAR"),
+            )
+          ],
+        ),
       ),
     );
   }

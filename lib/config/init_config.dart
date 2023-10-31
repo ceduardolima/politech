@@ -26,42 +26,41 @@ Future<void> initConfig() async {
 
   GetIt getIt = GetIt.instance;
   getIt.registerSingletonAsync<PolitechDb>(
-          () async => $FloorPolitechDb.databaseBuilder('politech_db.db').build());
+      () async => $FloorPolitechDb.databaseBuilder('politech_db.db').build());
   getIt.registerSingletonWithDependencies<UsuarioDao>(
-          () => GetIt.instance.get<PolitechDb>().usuarioDao,
+      () => GetIt.instance.get<PolitechDb>().usuarioDao,
       dependsOn: [PolitechDb]);
   getIt.registerSingletonWithDependencies<AlunoDao>(
-          () => GetIt.instance.get<PolitechDb>().alunoDao,
+      () => GetIt.instance.get<PolitechDb>().alunoDao,
       dependsOn: [PolitechDb]);
   getIt.registerSingletonWithDependencies<TurmaDao>(
-          () => GetIt.instance.get<PolitechDb>().turmaDao,
+      () => GetIt.instance.get<PolitechDb>().turmaDao,
       dependsOn: [PolitechDb]);
   getIt.registerSingletonWithDependencies<PresencaDao>(
-          () => GetIt.instance.get<PolitechDb>().presencaDao,
+      () => GetIt.instance.get<PolitechDb>().presencaDao,
       dependsOn: [PolitechDb]);
   getIt.registerSingletonWithDependencies<ChamadaDao>(
-          () => GetIt.instance.get<PolitechDb>().chamadaDao,
+      () => GetIt.instance.get<PolitechDb>().chamadaDao,
       dependsOn: [PolitechDb]);
   getIt.registerSingletonWithDependencies<HorarioDao>(
-          () => GetIt.instance.get<PolitechDb>().horarioDao,
+      () => GetIt.instance.get<PolitechDb>().horarioDao,
       dependsOn: [PolitechDb]);
   getIt.registerSingletonWithDependencies<UsuarioRepositorio>(
-          () => UsuarioRepositorio(),
+      () => UsuarioRepositorio(),
       dependsOn: [PolitechDb, UsuarioDao]);
   getIt.registerSingletonWithDependencies<TurmaRepositorio>(
-          () => TurmaRepositorio(),
+      () => TurmaRepositorio(),
       dependsOn: [PolitechDb, TurmaDao]);
   getIt.registerSingletonWithDependencies<ChamadaRepositorio>(
-          () => ChamadaRepositorio(),
+      () => ChamadaRepositorio(),
       dependsOn: [PolitechDb, ChamadaDao]);
   getIt.registerSingletonWithDependencies<PresencaRepositorio>(
-          () => PresencaRepositorio(),
+      () => PresencaRepositorio(),
       dependsOn: [PolitechDb, PresencaDao]);
   getIt.registerSingletonWithDependencies<AlunoRepositorio>(
-          () => AlunoRepositorio(),
+      () => AlunoRepositorio(),
       dependsOn: [PolitechDb, AlunoDao]);
   getIt.registerSingletonWithDependencies<HorarioRepositorio>(
-          () => HorarioRepositorio(),
+      () => HorarioRepositorio(),
       dependsOn: [PolitechDb, HorarioDao]);
 }
-

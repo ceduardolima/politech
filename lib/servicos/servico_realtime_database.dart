@@ -23,13 +23,13 @@ class ServicoRealTimeDatabase extends ChangeNotifier {
     }
   }
 
-  Future<void> pesquisarTurmas(String email) async {
+  Future<Map?> pesquisarTurmas(String email) async {
     final nome = email.split("@")[0];
     final data = await _database.ref("Turmas/$nome").get();
-    if (data != null && data.exists) {
-      _turmas = Map.from(data.value! as Map);
-      debugPrint(_turmas.toString());
+    if (data.exists) {
+      return data.value! as Map;
     }
+    return null;
   }
 
   Usuario? get usuario => _usuario;
